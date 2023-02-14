@@ -3,14 +3,18 @@
 <head>
     <%- include('../partials/head.ejs'); %>
     <%- include('../partials/bootstrap.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>MainScreen</title>
 </head>
 <body class="container">
     <main>
         <div class="mt-4 p-5 bg-secondary text-white rounded">
-            <h1>This is great</h1>
-            <p>Welcome to templating using EJS</p>
-            <button class="btn btn-primary">Login</button>
-            <button class="btn btn-success">Register</button>
+            <h1>Main Screen</h1>
+            <p>Welcome to basic exercise</p>
+            <%- include('../pages/login.ejs'); %>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLoginForm">Login</button>
+            <%- include('../pages/register.ejs'); %>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegisterForm">Register</button>
         </div>
     </main>
 
