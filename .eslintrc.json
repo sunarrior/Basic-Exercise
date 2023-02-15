@@ -6,7 +6,6 @@
     "extends": [
         "prettier",
         "eslint:recommended",
-        "plugin:react/recommended",
         "plugin:prettier/recommended"
     ],
     "overrides": [
@@ -16,13 +15,11 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
         "prettier"
     ],
     "rules": {
-        "react/prop-types": "off",
-        "react/react-in-jsx-scope": "off",
         "no-unused-vars": "off",
+        "no-undef": "off",
         "prettier/prettier": [
             "error",
             {
