@@ -1,43 +1,47 @@
-<div id="modalRegisterForm" class="modal fade">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button 
-                    class="btn-close btn-close-blue" 
-                    data-bs-dismiss="modal"></button>
-                <div class="bg-gray form-box">
-                    <h2>Register Form</h2>
-                    <form class="form-login">
-                        <!-- Name input -->
-                        <div class="form-outline mb-4">
-                            <input type="text" id="nameRegister" class="form-control" placeholder="Name"/>
-                        </div>
-
-                        <!-- Username input -->
-                        <div class="form-outline mb-4">
-                            <input type="text" id="usernameRegister" class="form-control" placeholder="Username"/>
-                        </div>
-
-                        <!-- Email input -->
-                        <div class="form-outline mb-4">
-                            <input type="email" id="emailRegister" class="form-control" placeholder="Email"/>
-                        </div>
-
-                        <!-- Password input -->
-                        <div class="form-outline mb-4">
-                            <input type="password" id="passwordRegister" class="form-control" placeholder="Password"/>
-                        </div>
-
-                        <!-- Repeat Password input -->
-                        <div class="form-outline mb-4">
-                            <input type="password" id="repeatPasswordRegister" class="form-control" placeholder="Repeat password"/>
-                        </div>
-
-                        <!-- Submit button -->
-                        <button type="button" class="btn btn-primary btn-block mb-4">Sign up</button>
-                    </form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Register Page</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="form-box rounded">
+            <h2>Register Form</h2>
+            <form class="form-login" action="/api/v1/auth/register" method="POST">
+                <!-- Name input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="nameRegister" class="form-control" name="nameRegister" placeholder="Name" required/>
                 </div>
-            </div>
+
+                <!-- Username input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="usernameRegister" class="form-control" name="usernameRegister" placeholder="Username" required/>
+                </div>
+
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                    <input type="email" id="emailRegister" class="form-control" name="emailRegister" placeholder="Email"/>
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="passwordRegister" class="form-control" name="passwordRegister" placeholder="Password" required/>
+                </div>
+
+                <!-- Repeat Password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="repeatPasswordRegister" class="form-control" name="repeatPasswordRegister" placeholder="Repeat password" required/>
+                </div>
+
+                <%- warning %>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+            </form>
         </div>
-    </div>
-</div>
+    </main>
+</body>
+</html>
+

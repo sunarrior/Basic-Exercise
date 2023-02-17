@@ -1,16 +1,13 @@
-import express from 'express';
+import express from "express";
 
-const router = express.Router()
+import user from "../controllers/auth.js";
+import validateDataRegister from "../middleware/validateDataRegister.js";
 
-router.post('/login', function(req, res) {
-    // console.log(req.body)
-    // Create and save session
-    res.render('pages/homepage')
-})
+const router = express.Router();
 
-router.post('register', function(req, res) {
-    // Validate and save data to db
-    // Popup notify that user has successfully registered
-})
+router.get("/register", user.getRegisterPage);
+router.post("/register", validateDataRegister, user.createUserData);
+router.get("/login", user.getLoginPage);
+router.post("/login", user.validateLogin);
 
-export default router
+export default router;
