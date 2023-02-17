@@ -12,37 +12,43 @@ const DATASOURCE_CONFIG = {
   port: 3306,
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  entities: [UserSchema],
+  synchronize: true,
 };
 
 const createDBIfNotExists = async function (databaseName) {
+  try {
+    const customDataSourceConfig = { ...DATASOURCE_CONFIG };
+    delete customDataSourceConfig.database;
+    delete customDataSourceConfig.entities;
+    delete customDataSourceConfig.synchronize;
+    const tmpDataSource = new typeorm.DataSource(customDataSourceConfig);
+    await tmpDataSource.initialize();
+    await tmpDataSource.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`);
+    await tmpDataSource.destroy();
+  } catch (err) {
+    console.log(err.message);
+  }
+};
+
+const startConnection = async function () {
   const dataSource = new typeorm.DataSource(DATASOURCE_CONFIG);
-  await dataSource.initialize();
-  await dataSource.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`);
-  await dataSource.destroy();
-
-  return [UserSchema];
+  try {
+    await dataSource.initialize();
+    return dataSource;
+  } catch (err) {
+    if (err.errno === 1049) {
+      createDBIfNotExists(process.env.DATABASE_NAME);
+      await dataSource.initialize();
+      return dataSource;
+    }
+    console.log(err.message);
+  }
 };
 
-const createCustomDS = function (entities) {
-  const customDSC = { ...DATASOURCE_CONFIG };
-  customDSC.database = process.env.DATABASE_NAME;
-  customDSC.entities = entities;
-  customDSC.synchronize = true;
-  const customDS = new typeorm.DataSource(customDSC);
-  return customDS;
-};
+const dataSource = startConnection();
 
-const createTblFromEntityIfNotExists = async function (entities) {
-  const entityDataSource = createCustomDS(entities);
-  await entityDataSource.initialize();
-  console.log("Initialized entities");
-  await entityDataSource.destroy();
-  console.log("Closed connection for creating entities");
+export default {
+  dataSource,
 };
-
-const utils = {
-  createDBIfNotExists: createDBIfNotExists,
-  createCustomDS: createCustomDS,
-  createTblFromEntityIfNotExists: createTblFromEntityIfNotExists,
-};
-export default utils;

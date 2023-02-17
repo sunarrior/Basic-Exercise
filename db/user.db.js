@@ -1,34 +1,39 @@
 import utils from "../utils/index.js";
 
-import UserSchema from "../entity/UserSchema.js";
 import User from "../model/User.js";
 
 const getAllUsersData = async function () {
-  const userDataSource = utils.dbHelper.createCustomDS([UserSchema]);
-  await userDataSource.initialize();
-  const userDataRepository = userDataSource.getRepository(User);
-  const result = await userDataRepository.find();
-  await userDataSource.destroy();
-  return result;
+  try {
+    const dataSource = await utils.dbHelper.dataSource;
+    const userDataRepository = dataSource.getRepository(User);
+    const result = await userDataRepository.find();
+    return result;
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 const getUserByUsername = async function (username) {
-  const userDataSource = utils.dbHelper.createCustomDS([UserSchema]);
-  await userDataSource.initialize();
-  const userDataRepository = userDataSource.getRepository(User);
-  const result = await userDataRepository.findOneBy({
-    username: username,
-  });
-  await userDataSource.destroy();
-  return result;
+  try {
+    const dataSource = await utils.dbHelper.dataSource;
+    const userDataRepository = dataSource.getRepository(User);
+    const result = await userDataRepository.findOneBy({
+      username: username,
+    });
+    return result;
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 const createUserData = async function (userData) {
-  const userDataSource = utils.dbHelper.createCustomDS([UserSchema]);
-  await userDataSource.initialize();
-  const userDataRepository = userDataSource.getRepository(User);
-  await userDataRepository.save(userData);
-  await userDataSource.destroy();
+  try {
+    const dataSource = await utils.dbHelper.dataSource;
+    const userDataRepository = dataSource.getRepository(User);
+    await userDataRepository.save(userData);
+  } catch (err) {
+    console.log(err.message);
+  }
 };
 
 export default {
