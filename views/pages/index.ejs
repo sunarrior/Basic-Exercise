@@ -5,15 +5,13 @@
     <link rel="stylesheet" href="/css/style.css">
     <title>MainScreen</title>
 </head>
-<body class="container">
+<body class="container mybodybg">
     <main>
         <div class="mt-4 p-5 bg-secondary text-white rounded">
             <h1>Main Screen</h1>
             <p>Welcome to basic exercise</p>
-            <%- include('../pages/login.ejs'); %>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLoginForm">Login</button>
-            <%- include('../pages/register.ejs'); %>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalRegisterForm">Register</button>
+            <button class="btn btn-primary"><a href="/api/v1/auth/login">Login</a></button>
+            <button class="btn btn-success"><a href="/api/v1/auth/register">Register</a></button>
         </div>
     </main>
 

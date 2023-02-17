@@ -1,12 +1,5 @@
-.modal-body {
-    padding: 0px;
-}
-
-.btn-close {
-    position: absolute;
-    right: 0;
-    margin-top: 10px;
-    margin-right: 10px;
+.mybodybg {
+    background-color: rgb(209 213 219);
 }
 
 .form-box {

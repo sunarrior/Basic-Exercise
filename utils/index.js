@@ -1,7 +1,7 @@
 import dbHelper from "./dbHelper.js";
+import encrypt from "./encrypt.js";
 
-const utils = {
-  dbHelper: dbHelper,
+export default {
+  dbHelper,
+  encrypt,
 };
-
-export default utils;
