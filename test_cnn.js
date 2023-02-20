@@ -1,18 +1,9 @@
-import redis from "redis";
+const birthday = new Date();
+const month = birthday.getMonth();
+const year = birthday.getFullYear();
 
-let redisClient;
+console.log(month + 1, year);
+const newDate = new Date(year, month, -2);
+console.log(newDate.toDateString());
 
-(async () => {
-  redisClient = redis.createClient(6379);
-
-  redisClient.on("error", (err) => {
-    console.log("Redis Error " + err);
-  });
-  await redisClient.connect();
-
-  // redisClient.set("test", "test");
-  // redisClient.expire("test", 600);
-  redisClient.del("test");
-  // const result = await redisClient.exists();
-  // console.log(result);
-})();
+// console.log((1 - 3) % 30);

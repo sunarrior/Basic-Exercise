@@ -1,103 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>CaroOffline</title>
-    <script>
-        const n = 12;
-        const s = 40;
-        const os = 50;
-        var step = 0;
-        const dadanh = [];
-
-
-        function CaroOffline() {
-            var canvas = document.getElementById("CaroOffline");
-
-            //khoi tao kich thuoc canvas va ve ban co
-            const GameWidth = n * s + 2 * os;
-            const GameHeight = n * s + 2 * os;
-            canvas.width = GameWidth;
-            canvas.height = GameHeight;
-            var context = canvas.getContext("2d");
-            paint(GameWidth, GameHeight, context);
-
-            //su kien chuot
-            canvas.addEventListener('click', (e) => {
-                const WindowWidth = window.innerWidth; //chieu rong cua man hinh
-                const WindowHeight = window.innerHeight; //chieu dai cua man hinh
-                const WidthBound = (WindowWidth - GameWidth) / 2; //bien cua canvas
-                //const HeightBound = (WindowHeight - 8 - GameHeight);
-
-                const x = e.clientX; //toa do chuot x
-                const y = e.clientY; //toa do chuot y
-
-                //click ngoai ban co thi ko bat su kien
-                if(x < WidthBound + os || x > WidthBound + GameWidth -os) return;
-                if(y < 8 + os || y > 8 + GameHeight - os) return;
-
-                //tinh toa do cua o trong ban co
-                var ix = Math.ceil((x - WidthBound - os)/s);
-                var iy = Math.ceil((y - 8 - os)/s);
-                //alert(ix + " " + iy);
-
-                //kiem tra xem da danh chua
-                for(var i = 0; i < dadanh.length; i++) {
-                    if(ix == dadanh[i].x && iy == dadanh[i].y) return;
-                }
-                addPoint(ix, iy, dadanh);
-
-                //ve XO
-                if(step % 2 == 0) Oicon(ix, iy, context);
-                else Xicon(ix, iy, context);
-
-            });
-        }
-
-        //ham ve ban co
-        function paint(w, h, ctx) {
-            ctx.fillStyle = "White";
-            ctx.fillRect(0, 0, w, h);
-
-            for(var i = 0; i <= n; i++) {
-                ctx.moveTo(s*i + os,os);
-                ctx.lineTo(s*i + os,h-os);
-                ctx.stroke();
-
-                ctx.moveTo(os,s*i + os);
-                ctx.lineTo(w-os,s*i + os);
-                ctx.stroke();
-            }
-        }
-
-        function addPoint(xVal, yVal, array) {
-            array.push({x: xVal, y: yVal});
-        }
-
-        function Xicon(x, y, ctx) {
-            ctx.font =  s + "px Arial";
-            ctx.fillStyle = "Red";
-            const dx = os + x*s - s + s/4;
-            const dy = os + y*s - s + s/2 + s/4;
-            ctx.fillText("x", dx, dy);
-            step++;
-        }
-
-        function Oicon(x, y, ctx) {
-            ctx.font =  s + "px Arial";
-            ctx.fillStyle = "Blue";
-            const dx = os + x*s - s + s/4;
-            const dy = os + y*s - s + s/2 + s/4;
-            ctx.fillText("o", dx, dy);
-            step++;
-        }
-    </script>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Calendar</title>
+    <%- include('../partials/calendar.ejs'); %>
 </head>
-<body onload="CaroOffline()">
-<div style="text-align: center">
-    <canvas id="CaroOffline" style="border: 1px solid black;">
+<body class="container mybodybg" onload="Calendar()">
+    <main>
+        <div class="my-center">
+            <div class="col-md-12 d-flex">
+                <h2 id="monthYearLabel">MM/YYYY</h2>
+                <a class="btn btn-primary ml-auto" href="#">Previous</a>
+                <a class="btn btn-primary ml-auto" href="#">Next</a>
+            </div>
+            <canvas id="calendar">
+    
+            </canvas>
+        </div>
+    </main>
 
-    </canvas>
-</div>
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
 </body>
 </html>
