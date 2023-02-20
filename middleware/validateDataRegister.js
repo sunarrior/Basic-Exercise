@@ -19,8 +19,13 @@ export default (req, res, next) => {
   }
   if (msg != "") {
     // return next(new Error(msg));
-    const warning = utils.render.registerWarning(msg);
-    res.render("pages/register", { warning: warning });
+    const warning = utils.render.warningBar(msg);
+    const userData = {
+      name: req.body.nameRegister,
+      username: req.body.usernameRegister,
+      email: req.body.emailRegister,
+    };
+    res.render("pages/register", { warning: warning, userData: userData });
   } else {
     next();
   }

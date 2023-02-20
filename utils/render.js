@@ -1,8 +1,8 @@
-const registerWarning = function (msg) {
+const warningBar = function (msg) {
   const warning = `<div class="alert alert-warning" role="alert"> ${msg} </div>`;
   return warning;
 };
 
 export default {
-  registerWarning,
+  warningBar,
 };
