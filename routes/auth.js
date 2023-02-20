@@ -10,5 +10,6 @@ router.get("/register", cookieChecker, user.getRegisterPage);
 router.post("/register", validateDataRegister, user.createUserData);
 router.get("/login", cookieChecker, user.getLoginPage);
 router.post("/login", user.validateLogin);
+router.get("/logout", user.userLogout);
 
 export default router;

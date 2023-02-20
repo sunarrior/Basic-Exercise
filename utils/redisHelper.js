@@ -71,9 +71,14 @@ const getPasswordAttempsCache = async function (key) {
   }
 };
 
+const clearCache = function (key) {
+  redisClient.del(key);
+};
+
 export default {
   setCache,
   setCacheObjByKey,
   checkSessionCache,
   getPasswordAttempsCache,
+  clearCache,
 };
