@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Register Page</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="form-box rounded">
+            <h2>Register Form</h2>
+            <form class="form-login" action="/api/v1/auth/register" method="POST">
+                <!-- Name input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="nameRegister" class="form-control" name="nameRegister" value="<%- userData.name %>" placeholder="Name" required/>
+                </div>
+
+                <!-- Username input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="usernameRegister" class="form-control" name="usernameRegister" value="<%- userData.username %>" placeholder="Username" required/>
+                </div>
+
+                <!-- Email input -->
+                <div class="form-outline mb-4">
+                    <input type="email" id="emailRegister" class="form-control" name="emailRegister" value="<%- userData.email %>" placeholder="Email"/>
+                </div>
+
+                <!-- Password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="passwordRegister" class="form-control" name="passwordRegister" placeholder="Password" required/>
+                </div>
+
+                <!-- Repeat Password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="repeatPasswordRegister" class="form-control" name="repeatPasswordRegister" placeholder="Repeat password" required/>
+                </div>
+
+                <%- warning %>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Sign up</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+

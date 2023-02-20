@@ -7,10 +7,37 @@
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
+    "nodemon": "^2.0.20",
     "prettier": "2.8.4"
   },
   "dependencies": {
+    "bcrypt": "^5.1.0",
+    "body-parser": "^1.20.1",
+    "cookie-parser": "^1.4.6",
     "ejs": "^3.1.8",
-    "express": "^4.18.2"
-  }
+    "express": "^4.18.2",
+    "mysql": "^2.18.1",
+    "redis": "^4.6.4",
+    "typeorm": "^0.3.12"
+  },
+  "name": "basic-exercise",
+  "description": "Start Your Markdown",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon start index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sunarrior/Basic-Exercise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sunarrior/Basic-Exercise/issues"
+  },
+  "homepage": "https://github.com/sunarrior/Basic-Exercise#readme"
 }

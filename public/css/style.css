@@ -1,0 +1,17 @@
+.mybodybg {
+    background-color: rgb(209 213 219);
+}
+
+.form-box {
+    background-color: rgb(156 163 175);
+    margin-top: auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.form-login {
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 20px;
+}
