@@ -4,13 +4,22 @@ export default async (req, res, next) => {
   try {
     const username = req.cookies.username;
     const sessionId = req.cookies.sessionId;
+    const url = req.url || "/homepage";
     if (username != undefined && sessionId != undefined) {
       const result = await utils.redisHelper.checkSessionCache(
         username,
         sessionId
       );
       if (result) {
-        return res.render("pages/homepage");
+        if (url === "/" || url === "/login" || url === "/register") {
+          return res.render("pages/homepage");
+        } else {
+          return res.render("pages" + url);
+        }
+      }
+    } else {
+      if (url != "/" && url != "/login" && url != "/register") {
+        return res.render("pages/index");
       }
     }
     next();
