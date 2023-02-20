@@ -3,8 +3,7 @@ import utils from "../utils/index.js";
 
 const getRegisterPage = function (req, res) {
   try {
-    const warning = "";
-    res.render("pages/register", { warning: warning });
+    res.render("pages/register", { warning: "", userData: "" });
   } catch (err) {
     console.log(err.message);
   }
@@ -12,8 +11,7 @@ const getRegisterPage = function (req, res) {
 
 const getLoginPage = function (req, res) {
   try {
-    const warning = "";
-    res.render("pages/login", { warning: warning });
+    res.render("pages/login", { warning: "", username: "" });
   } catch (err) {
     console.log(err.message);
   }
@@ -21,23 +19,44 @@ const getLoginPage = function (req, res) {
 
 const validateLogin = async function (req, res) {
   try {
+    let msg = "";
     const username = req.body.usernameLogin;
     const password = req.body.passwordLogin;
-    const user = await userDB.getUserByUsername(username);
-    if (utils.encrypt.validateEncPassword(password, user.password)) {
-      console.log("wrong password");
+    const passwordAttemps = await utils.redisHelper.getPasswordAttempsCache(
+      username
+    );
+    if (passwordAttemps >= 3) {
+      msg = "Your account has been blocked for 50 minutes";
+      const warning = utils.render.warningBar(msg);
+      return res.render("pages/login", { warning: warning });
     }
-    res.render("pages/homepage");
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-const getAllUsersData = async function (req, res) {
-  try {
-    // const result = await userDB.getAllUsersData();
-    // res.json(result);
-    res.render("pages/register");
+    const user = await userDB.getUserByUsername(username);
+    if (!user) {
+      msg = "Username is not exists!";
+    } else {
+      const compareResult = await utils.encrypt.validateEncPassword(
+        password,
+        user.password
+      );
+      if (!compareResult) {
+        msg = "Username or password is incorrect!";
+        await utils.redisHelper.setCacheObjByKey(
+          username,
+          "passwordAttemps",
+          passwordAttemps + 1,
+          3000
+        );
+      }
+    }
+    if (msg != "") {
+      const warning = utils.render.warningBar(msg);
+      res.render("pages/login", { warning: warning, username: username });
+    } else {
+      await utils.redisHelper.setCache(username, { sessionId: "test" }, 120);
+      res.cookie("username", username, { maxAge: 120000, httpOnly: true });
+      res.cookie("sessionId", "test", { maxAge: 120000, httpOnly: true });
+      res.render("pages/homepage", { warning: msg });
+    }
   } catch (err) {
     console.log(err.message);
   }
@@ -62,8 +81,13 @@ const createUserData = async function (req, res) {
       console.log("duplicate user");
       msg = "Username has already existed!";
     }
-    const warning = utils.render.registerWarning(msg);
-    res.render("pages/register", { warning: warning });
+    const userData = {
+      name: req.body.nameRegister,
+      username: req.body.usernameRegister,
+      email: req.body.emailRegister,
+    };
+    const warning = utils.render.warningBar(msg);
+    res.render("pages/register", { warning: warning, userData: userData });
     console.log(err.message);
   }
 };
@@ -72,6 +96,5 @@ export default {
   getRegisterPage,
   getLoginPage,
   validateLogin,
-  getAllUsersData,
   createUserData,
 };

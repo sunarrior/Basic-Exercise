@@ -1,7 +1,7 @@
 import path from "path";
 import { fileURLToPath } from "url";
 import express from "express";
-import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 
 import routes from "./routes/index.js";
 
@@ -13,7 +13,7 @@ app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 app.use("/api/v1", routes);
 app.get("/", (req, res) => {

@@ -12,17 +12,17 @@
             <form class="form-login" action="/api/v1/auth/register" method="POST">
                 <!-- Name input -->
                 <div class="form-outline mb-4">
-                    <input type="text" id="nameRegister" class="form-control" name="nameRegister" placeholder="Name" required/>
+                    <input type="text" id="nameRegister" class="form-control" name="nameRegister" value="<%- userData.name %>" placeholder="Name" required/>
                 </div>
 
                 <!-- Username input -->
                 <div class="form-outline mb-4">
-                    <input type="text" id="usernameRegister" class="form-control" name="usernameRegister" placeholder="Username" required/>
+                    <input type="text" id="usernameRegister" class="form-control" name="usernameRegister" value="<%- userData.username %>" placeholder="Username" required/>
                 </div>
 
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                    <input type="email" id="emailRegister" class="form-control" name="emailRegister" placeholder="Email"/>
+                    <input type="email" id="emailRegister" class="form-control" name="emailRegister" value="<%- userData.email %>" placeholder="Email"/>
                 </div>
 
                 <!-- Password input -->

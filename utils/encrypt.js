@@ -13,7 +13,6 @@ const encryptPassword = async function (password) {
 const validateEncPassword = async function (password, hashPassword) {
   try {
     const result = await bcrypt.compare(password, hashPassword);
-    console.log("compare result", result);
     return result;
   } catch (err) {
     console.log(err.message);
