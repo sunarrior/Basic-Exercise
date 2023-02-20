@@ -92,7 +92,16 @@ const createUserData = async function (req, res) {
   }
 };
 
+const userLogout = function (req, res) {
+  const username = req.cookies.username;
+  utils.redisHelper.clearCache(username);
+  res.clearCookie("username");
+  res.clearCookie("sessionId");
+  res.render("pages/index");
+};
+
 export default {
+  userLogout,
   getRegisterPage,
   getLoginPage,
   validateLogin,
