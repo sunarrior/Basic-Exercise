@@ -39,7 +39,7 @@ const validateLogin = async function (req, res) {
       await utils.redisHelper.setCache(username, { sessionId: "test" }, 3000);
       res.cookie("username", username, { maxAge: 3000000, httpOnly: true });
       res.cookie("sessionId", "test", { maxAge: 3000000, httpOnly: true });
-      res.render("pages/homepage", { warning: msg });
+      res.redirect("/homepage");
     }
   } catch (err) {
     console.log(err.message);
@@ -81,7 +81,7 @@ const userLogout = function (req, res) {
   utils.redisHelper.clearCache(username);
   res.clearCookie("username");
   res.clearCookie("sessionId");
-  res.render("pages/index");
+  res.redirect("/");
 };
 
 export default {
