@@ -1,3 +1,11 @@
-const regex = /^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/;
+import util from "util";
+const { generatePrime } = await import("node:crypto");
 
-console.log(regex.test("haha123//"));
+const generatePrimePromise = util.promisify(generatePrime);
+let p = await generatePrimePromise(64, { bigint: true });
+let q = await generatePrimePromise(64, { bigint: true });
+
+// console.log(p);
+const n = p * q;
+
+console.log(n.toString(16));

@@ -16,7 +16,7 @@ const setCache = async function (key, obj, maxAge) {
     await redisClient.set(key, JSON.stringify(obj));
     await redisClient.expire(key, maxAge);
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
   }
 };
 
@@ -35,23 +35,23 @@ const setCacheObjByKey = async function (key, objKey, objValue, maxAge) {
       await redisClient.expire(key, maxAge);
     }
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
   }
 };
 
-const checkSessionCache = async function (key, value) {
+const checkCacheObjByKey = async function (key, objKey, objValue) {
   try {
     const cacheObjJson = await redisClient.get(key);
     if (cacheObjJson) {
       const cacheObj = JSON.parse(cacheObjJson);
-      if (value === cacheObj.sessionId) {
+      if (objValue === cacheObj[objKey]) {
         return true;
       }
     } else {
       return false;
     }
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
   }
 };
 
@@ -67,7 +67,7 @@ const getPasswordAttempsCache = async function (key) {
       return 0;
     }
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
   }
 };
 
@@ -78,7 +78,7 @@ const clearCache = function (key) {
 export default {
   setCache,
   setCacheObjByKey,
-  checkSessionCache,
+  checkCacheObjByKey,
   getPasswordAttempsCache,
   clearCache,
 };
