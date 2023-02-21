@@ -1,22 +1,6 @@
 import userDB from "../db/user.db.js";
 import utils from "../utils/index.js";
 
-const getRegisterPage = function (req, res) {
-  try {
-    res.render("pages/register", { warning: "", userData: "" });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
-const getLoginPage = function (req, res) {
-  try {
-    res.render("pages/login", { warning: "", username: "" });
-  } catch (err) {
-    console.log(err.message);
-  }
-};
-
 const validateLogin = async function (req, res) {
   try {
     let msg = "";
@@ -52,10 +36,10 @@ const validateLogin = async function (req, res) {
       const warning = utils.render.warningBar(msg);
       res.render("pages/login", { warning: warning, username: username });
     } else {
-      await utils.redisHelper.setCache(username, { sessionId: "test" }, 120);
-      res.cookie("username", username, { maxAge: 120000, httpOnly: true });
-      res.cookie("sessionId", "test", { maxAge: 120000, httpOnly: true });
-      res.render("pages/homepage", { warning: msg });
+      await utils.redisHelper.setCache(username, { sessionId: "test" }, 3000);
+      res.cookie("username", username, { maxAge: 3000000, httpOnly: true });
+      res.cookie("sessionId", "test", { maxAge: 3000000, httpOnly: true });
+      res.redirect("/homepage");
     }
   } catch (err) {
     console.log(err.message);
@@ -97,13 +81,11 @@ const userLogout = function (req, res) {
   utils.redisHelper.clearCache(username);
   res.clearCookie("username");
   res.clearCookie("sessionId");
-  res.render("pages/index");
+  res.redirect("/");
 };
 
 export default {
-  userLogout,
-  getRegisterPage,
-  getLoginPage,
   validateLogin,
   createUserData,
+  userLogout,
 };

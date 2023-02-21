@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Calendar</title>
+    <%- include('../partials/calendar.ejs'); %>
+</head>
+<body class="container mybodybg" onload="Calendar()">
+    <main>
+        <div class="row justify-content-center">
+            <div class="col-md-auto">
+                <h2 id="monthYearLabel">MM/YYYY</h2>
+            </div>
+            <div class="col-md-auto">
+                <a class="btn btn-primary" href="#">Previous</a>
+                <a class="btn btn-primary" href="#">Next</a>
+            </div>
+            <canvas id="calendar">
+    
+            </canvas>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
+</body>
+</html>

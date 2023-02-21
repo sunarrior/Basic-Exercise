@@ -4,7 +4,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 
 import routes from "./routes/index.js";
-import cookieChecker from "./middleware/cookieChecker.js";
+import routesUI from "./routes/ui.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -17,8 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/api/v1", routes);
-app.get("/", cookieChecker, (req, res) => {
-  res.render("pages/index");
-});
+app.use("/", routesUI);
 
 export default app;

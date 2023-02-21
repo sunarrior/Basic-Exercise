@@ -39,9 +39,25 @@
                 </div>
 
                 <!-- Submit button -->
-                <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
+                <button type="submit" id="loginBtn" class="btn btn-primary btn-block mb-4" disabled>Sign in</button>
             </form>
         </div>
     </main>
 </body>
+<script>
+    const loginBtn = document.getElementById("loginBtn");
+    const loginField = document.getElementById("usernameLogin");
+    const passwordField = document.getElementById("passwordLogin");
+    loginField.addEventListener("input", check);
+    passwordField.addEventListener("input", check);
+
+    function check() {
+        if(loginField.value != "" && passwordField.value != "") {
+            loginBtn.removeAttribute("disabled"); 
+        } else {
+            loginBtn.setAttribute("disabled","disabled");
+        }
+    }
+    
+</script>
 </html>
