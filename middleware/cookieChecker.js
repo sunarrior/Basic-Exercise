@@ -6,7 +6,7 @@ export default async (req, res, next) => {
     const sessionId = req.cookies.sessionId;
     const url = req.url || "/homepage";
     if (username != undefined && sessionId != undefined) {
-      const result = await utils.redisHelper.checkSessionCache(
+      const result = await utils.redisHelper.checkCacheObjByKey(
         username,
         sessionId
       );

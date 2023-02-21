@@ -26,5 +26,9 @@ export default new EntitySchema({
     password: {
       type: "varchar",
     },
+    activeStatus: {
+      type: "boolean",
+      default: false,
+    },
   },
 });

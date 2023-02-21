@@ -7,8 +7,8 @@
     <%- include('../partials/calendar.ejs'); %>
 </head>
 <body class="container mybodybg" onload="Calendar()">
-    <main>
-        <div class="row justify-content-center">
+    <main class="container my-center">
+        <div class="row justify-content-md-center">
             <div class="col-md-auto">
                 <h2 id="monthYearLabel">MM/YYYY</h2>
             </div>
@@ -16,10 +16,10 @@
                 <a class="btn btn-primary" href="#">Previous</a>
                 <a class="btn btn-primary" href="#">Next</a>
             </div>
-            <canvas id="calendar">
-    
-            </canvas>
         </div>
+        <canvas id="calendar">
+    
+        </canvas>
     </main>
 
     <footer>
