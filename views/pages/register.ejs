@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head.ejs'); %>
+    <%- include('../partials/Head.ejs'); %>
     <link rel="stylesheet" href="/css/style.css">
     <title>Register Page</title>
 </head>
@@ -12,27 +12,27 @@
             <form class="form-login" action="/api/v1/auth/register" method="POST">
                 <!-- Name input -->
                 <div class="form-outline mb-4">
-                    <input type="text" id="nameRegister" class="form-control" name="nameRegister" value="<%- userData.name %>" placeholder="Name" required/>
+                    <input type="text" id="name" class="form-control" name="name" value="<%- userData.name %>" placeholder="Name" required/>
                 </div>
 
                 <!-- Username input -->
                 <div class="form-outline mb-4">
-                    <input type="text" id="usernameRegister" class="form-control" name="usernameRegister" value="<%- userData.username %>" placeholder="Username" required/>
+                    <input type="text" id="username" class="form-control" name="username" value="<%- userData.username %>" placeholder="Username" required/>
                 </div>
 
                 <!-- Email input -->
                 <div class="form-outline mb-4">
-                    <input type="email" id="emailRegister" class="form-control" name="emailRegister" value="<%- userData.email %>" placeholder="Email"/>
+                    <input type="email" id="email" class="form-control" name="email" value="<%- userData.email %>" placeholder="Email"/>
                 </div>
 
                 <!-- Password input -->
                 <div class="form-outline mb-4">
-                    <input type="password" id="passwordRegister" class="form-control" name="passwordRegister" placeholder="Password" required/>
+                    <input type="password" id="passwd" class="form-control" name="passwd" placeholder="Password" required/>
                 </div>
 
                 <!-- Repeat Password input -->
                 <div class="form-outline mb-4">
-                    <input type="password" id="repeatPasswordRegister" class="form-control" name="repeatPasswordRegister" placeholder="Repeat password" required/>
+                    <input type="password" id="repeatPasswd" class="form-control" name="repeatPasswd" placeholder="Repeat password" required/>
                 </div>
 
                 <%- warning %>

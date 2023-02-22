@@ -23,10 +23,10 @@ export default new EntitySchema({
       type: "varchar",
       nullable: true,
     },
-    password: {
+    passwd: {
       type: "varchar",
     },
-    activeStatus: {
+    active_status: {
       type: "boolean",
       default: false,
     },

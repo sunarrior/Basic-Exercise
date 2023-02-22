@@ -1,14 +1,16 @@
 import express from "express";
 
-import user from "../controllers/auth.js";
-import validateDataRegister from "../middleware/validateDataRegister.js";
+import user from "../controllers/auth.controller.js";
+import cookieChecker from "../middleware/cookie-checker.js";
+import validateRegister from "../middleware/validate-register.js";
+import validateRecovery from "../middleware/validate-recovery.js";
 
 const router = express.Router();
 
-router.post("/register", validateDataRegister, user.createUserData);
+router.post("/register", validateRegister, user.createUser);
 router.post("/login", user.validateLogin);
-router.get("/logout", user.userLogout);
-// router.get("/verify/:username", user.verifyAccount);
+router.get("/logout", cookieChecker, user.userLogout);
 router.get("/verify/:username/:token", user.verifyAccount);
+router.post("/recovery", validateRecovery, user.recoveryRequest);
 
 export default router;

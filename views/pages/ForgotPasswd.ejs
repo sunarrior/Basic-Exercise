@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/Head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Find Account Page</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="form-box rounded">
+            <h2>Find your account</h2>
+            <form class="form-login" action="/api/v1/auth/recovery?findaccount=1" method="POST">
+                <!-- Account input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="account" class="form-control" name="account" placeholder="Input Username or Email" required/>
+                </div>
+
+                <%- warning %>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Recovery</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+

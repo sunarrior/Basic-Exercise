@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head.ejs'); %>
+    <%- include('../partials/Head.ejs'); %>
     <link rel="stylesheet" href="/css/style.css">
     <title>Login Page</title>
 </head>
@@ -10,17 +10,17 @@
         <div class="form-box rounded">
             <h2>Login Form</h2>
             <form class="form-login" action="/api/v1/auth/login" method="POST">
-                <!-- Username input -->
+                <!-- Account input -->
                 <div class="form-outline mb-4">
-                    <input type="text" id="usernameLogin" class="form-control" name="usernameLogin" value="<%- username %>" placeholder="Username"/>
+                    <input type="text" id="account" class="form-control" name="account" value="<%- account %>" placeholder="Username or Email"/>
                 </div>
 
                 <!-- Password input -->
                 <div class="form-outline mb-4">
-                    <input type="password" id="passwordLogin" class="form-control" name="passwordLogin" placeholder="Password"/>
+                    <input type="password" id="passwd" class="form-control" name="passwd" placeholder="Password"/>
                 </div>
 
-                <%- warning %>
+                <%- warning || '' %>
 
                 <!-- 2 column grid layout for inline styling -->
                 <div class="row mb-4">
@@ -34,7 +34,7 @@
 
                     <div class="col">
                     <!-- Simple link -->
-                    <a href="#!">Forgot password?</a>
+                    <a href="/recovery">Forgot password?</a>
                     </div>
                 </div>
 
@@ -46,8 +46,8 @@
 </body>
 <script>
     const loginBtn = document.getElementById("loginBtn");
-    const loginField = document.getElementById("usernameLogin");
-    const passwordField = document.getElementById("passwordLogin");
+    const loginField = document.getElementById("account");
+    const passwordField = document.getElementById("passwd");
     loginField.addEventListener("input", check);
     passwordField.addEventListener("input", check);
 
