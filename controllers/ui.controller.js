@@ -8,7 +8,7 @@ const getIndexPage = function (req, res) {
 
 const getRegisterPage = function (req, res) {
   try {
-    res.render("pages/register", { warning: "", userData: "" });
+    res.render("pages/Register", { warning: "", userData: "" });
   } catch (err) {
     console.log(err);
   }
@@ -16,7 +16,15 @@ const getRegisterPage = function (req, res) {
 
 const getLoginPage = function (req, res) {
   try {
-    res.render("pages/login", { warning: "", username: "" });
+    res.render("pages/Login", { warning: "", account: "" });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getForgotPasswdPage = function (req, res) {
+  try {
+    res.render("pages/ForgotPasswd", { warning: "" });
   } catch (err) {
     console.log(err);
   }
@@ -24,7 +32,7 @@ const getLoginPage = function (req, res) {
 
 const getHomepagePage = function (req, res) {
   try {
-    res.render("pages/homepage");
+    res.render("pages/Homepage");
   } catch (err) {
     console.log(err);
   }
@@ -32,7 +40,7 @@ const getHomepagePage = function (req, res) {
 
 const getCalendarPage = function (req, res) {
   try {
-    res.render("pages/calendar");
+    res.render("pages/Calendar");
   } catch (err) {
     console.log(err);
   }
@@ -44,4 +52,5 @@ export default {
   getLoginPage,
   getHomepagePage,
   getCalendarPage,
+  getForgotPasswdPage,
 };

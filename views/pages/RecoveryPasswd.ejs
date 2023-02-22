@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Recovery Page</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="form-box rounded">
+            <h2>Recovery Form</h2>
+            <form class="form-login" action="/api/v1/auth/recovery?verify=1" method="POST">
+                <!-- Account input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="account" class="form-control" name="account" value="<%- account %>" placeholder="Account name" required readonly/>
+                </div>
+
+                <!-- Code recovery input -->
+                <div class="form-outline mb-4">
+                    <input type="text" id="code" class="form-control" name="code" placeholder="Code recovery" required/>
+                </div>
+
+                <!-- New password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="passwd" class="form-control" name="passwd" placeholder="New password" required/>
+                </div>
+
+                <!-- Repeat new password input -->
+                <div class="form-outline mb-4">
+                    <input type="password" id="repeatPasswd" class="form-control" name="repeatPasswd" placeholder="Repeat new password" required/>
+                </div>
+
+                <%- warning %>
+
+                <!-- Submit button -->
+                <button type="submit" class="btn btn-primary btn-block mb-4">Change password</button>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
+

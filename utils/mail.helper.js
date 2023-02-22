@@ -2,17 +2,13 @@ import dotenv from "dotenv";
 dotenv.config();
 import nodemailer from "nodemailer";
 
-import encrypt from "./encrypt.js";
-import redisHelper from "./redisHelper.js";
-
 const config = {
   service: "gmail",
   auth: {
     user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASSWORD,
+    pass: process.env.GMAIL_PASSWD,
   },
 };
-
 const transporter = nodemailer.createTransport(config);
 
 async function sendMailFromGmail(mailData) {
@@ -29,10 +25,8 @@ async function sendMailFromGmail(mailData) {
   }
 }
 
-async function sendVerifyMail(username, email) {
+async function sendVerifyMail(username, email, token) {
   try {
-    const token = await encrypt.generateToken(64);
-    await redisHelper.setCache(username, { token: token }, 120);
     const timeSended = new Date();
     const mailData = {
       to: email,
@@ -48,7 +42,24 @@ async function sendVerifyMail(username, email) {
   }
 }
 
+async function sendRecoveryCode(username, email, code) {
+  try {
+    const timeSended = new Date();
+    const mailData = {
+      to: email,
+      subject: `Recovery code ${timeSended.toLocaleTimeString()}`,
+      htmlContent: `<b>
+        Recovery code for account ${username}: ${code}
+      </b>`,
+    };
+    await sendMailFromGmail(mailData);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export default {
   sendMailFromGmail,
   sendVerifyMail,
+  sendRecoveryCode,
 };
