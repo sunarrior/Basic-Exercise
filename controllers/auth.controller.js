@@ -34,7 +34,7 @@ const createUser = async function (req, res) {
       email: req.body.email,
     };
     const warning = utils.render.warningBar(msg);
-    res.render("pages/register", { warning: warning, userData: userData });
+    res.render("pages/Register", { warning: warning, userData: userData });
     console.log(err);
   }
 };
@@ -72,7 +72,7 @@ const validateLogin = async function (req, res) {
       if (!user.active_status) {
         msg = `Verify your account to start using services <a href="#">Click here to resend verify link</a>`;
         const warning = utils.render.warningBar(msg);
-        return res.render("pages/login", {
+        return res.render("pages/Login", {
           warning: warning,
           account: account,
         });
@@ -84,7 +84,7 @@ const validateLogin = async function (req, res) {
         msg = "Your account has been blocked for 50 minutes";
         // set time in redis cache
         const warning = utils.render.warningBar(msg);
-        return res.render("pages/login", {
+        return res.render("pages/Login", {
           warning: warning,
           account: account,
         });
@@ -105,7 +105,7 @@ const validateLogin = async function (req, res) {
     }
     if (msg != "") {
       const warning = utils.render.warningBar(msg);
-      res.render("pages/login", { warning: warning, account: account });
+      res.render("pages/Login", { warning: warning, account: account });
     } else {
       await utils.redisCache.setObjByKey(
         user.username,
