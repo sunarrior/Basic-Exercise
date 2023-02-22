@@ -2,6 +2,10 @@
     background-color: rgb(209 213 219);
 }
 
+.my-center {
+    text-align: center;
+}
+
 .form-box {
     background-color: rgb(156 163 175);
     margin-top: auto;
@@ -14,4 +18,8 @@
     margin-left: auto;
     margin-right: auto;
     padding-top: 20px;
+}
+
+#calendar {
+    border: 1px solid black;
 }

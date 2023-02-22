@@ -1,0 +1,121 @@
+<script>
+    const dayOfTheWeek = [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat",
+    ];
+
+    const month = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ]
+
+    const row = 6;
+    const column = 7;
+    const sizeWidth = 100;
+    const sizeHeight = 80;
+    const os = 0;
+
+    function Calendar() {
+        let canvas = document.getElementById("calendar");
+
+        // Initialize canvas size and draw matrix
+        const CalendarWidth = column * sizeWidth + 2 * os;
+        const CalendarHeight = row * sizeHeight + 2 * os;
+        canvas.width = CalendarWidth;
+        canvas.height = CalendarHeight;
+        let context = canvas.getContext("2d");
+        paint(CalendarWidth, CalendarHeight, context);
+        drawDayOfTheWeek(context);
+        drawDay(context);
+    }
+
+    function paint(w, h, ctx) {
+        ctx.fillStyle = "#2596be";
+        ctx.fillRect(0, 0, w, sizeHeight);
+                    
+        ctx.fillStyle = "White";
+        ctx.fillRect(0, sizeHeight, w, h - sizeHeight);
+        for (let i = 1; i < row; i++) {
+            ctx.fillStyle = (i % 2 == 0) ? "White" : "#92cbdf";
+            ctx.fillRect(0, i * sizeHeight, w, h - i * sizeHeight);
+        }
+
+        for (let i = 0; i <= column; i++) {
+            ctx.moveTo(sizeWidth*i + os, os);
+            ctx.lineTo(sizeWidth*i + os, h-os);
+            ctx.stroke();
+        }
+
+        for (let i = 0; i <= row; i++) {
+            ctx.moveTo(os,sizeHeight*i + os);
+            ctx.lineTo(w-os,sizeHeight*i + os);
+            ctx.stroke();
+        }
+    }
+
+    function drawDayOfTheWeek(ctx) {
+        ctx.font = "15px Arial";
+        ctx.fillStyle = "Black";
+        for (let d = 0; d < dayOfTheWeek.length; d++) {
+            let dx = os + d*sizeWidth + sizeWidth/4 + sizeWidth/8 - sizeWidth/32;
+            let dy = os + sizeHeight - sizeHeight/2 + sizeHeight/16;
+            ctx.fillText(dayOfTheWeek[d], dx, dy);
+        }
+    }
+
+    function drawDay(ctx) {
+        ctx.font = "15px Arial";
+        let initDay = 0;
+        const today = new Date();
+        const curDay = today.getDate();
+        const curMonth = today.getMonth();
+        const curYear = today.getFullYear();
+        let monthYearLabel = document.getElementById("monthYearLabel");
+        monthYearLabel.innerHTML = `${month[curMonth]} ${curYear}`;
+
+        const firstDayOfMonth = new Date(curYear, curMonth, 1);
+        if (firstDayOfMonth.getDay() != 0) {
+            initDay = 1 - firstDayOfMonth.getDay();
+        }
+        for (let c = 0; c < column; c++) {
+            let dx = os + c * sizeWidth + sizeWidth/4 + sizeWidth/8 + sizeWidth/24;
+            for (let r = 1; r < row; r++) {
+                const dayOfMonth = new Date(curYear, curMonth, initDay + 7 * (r - 1));
+                const day = dayOfMonth.getDate();
+                const month = dayOfMonth.getMonth();
+                if (day === curDay && month === curMonth) {
+                    ctx.fillStyle = "#ffb3b3";
+                    ctx.fillRect(
+                        c * sizeWidth + 1,
+                        r * sizeHeight + 1,
+                        sizeWidth - 2,
+                        sizeHeight - 2
+                    );
+                }
+                if (month != curMonth) {
+                    ctx.fillStyle = "Gray";
+                } else {
+                    ctx.fillStyle = "Black";
+                }
+                let dy = os + (r + 1) * sizeHeight - sizeHeight/2 + sizeHeight/16;
+                ctx.fillText(day, dx, dy);
+            }
+            initDay += 1;
+        }
+    }
+</script>

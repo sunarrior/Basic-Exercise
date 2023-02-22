@@ -1,11 +1,15 @@
-import dbHelper from "./dbHelper.js";
-import encrypt from "./encrypt.js";
-import render from "./render.js";
-import redisHelper from "./redisHelper.js";
+import db from "./db.helper.js";
+import crypto from "./crypto.helper.js";
+import regex from "./regex.helper.js";
+import render from "./render.helper.js";
+import redisCache from "./redis.cache.helper.js";
+import mail from "./mail.helper.js";
 
 export default {
-  dbHelper,
-  encrypt,
+  db,
+  crypto,
+  regex,
   render,
-  redisHelper,
+  redisCache,
+  mail,
 };

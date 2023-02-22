@@ -1,15 +1,11 @@
-import redis from "redis";
+import util from "util";
+const { generatePrime } = await import("node:crypto");
 
-let redisClient;
+const generatePrimePromise = util.promisify(generatePrime);
+let p = await generatePrimePromise(64, { bigint: true });
+let q = await generatePrimePromise(64, { bigint: true });
 
-(async () => {
-  redisClient = redis.createClient(6379);
+// console.log(p);
+const n = p * q;
 
-  redisClient.on("error", (err) => {
-    console.log("Redis Error " + err);
-  });
-  await redisClient.connect();
-})();
-
-redisClient.set("test", "test");
-redisClient.expire("test", 60);
+console.log(n.toString(16));

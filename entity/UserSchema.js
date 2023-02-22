@@ -23,8 +23,12 @@ export default new EntitySchema({
       type: "varchar",
       nullable: true,
     },
-    password: {
+    passwd: {
       type: "varchar",
+    },
+    active_status: {
+      type: "boolean",
+      default: false,
     },
   },
 });

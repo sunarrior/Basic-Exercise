@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('../partials/head.ejs'); %>
+    <%- include('../partials/Head.ejs'); %>
     <link rel="stylesheet" href="/css/style.css">
-    <title>HomePage</title>
+    <title>Homepage</title>
 </head>
-<body class="container">
-    <h1>This is Home Page</h1>
+<body class="container mybodybg">
+    <main>
+        <div class="mt-4 p-5 bg-secondary text-white rounded">
+            <h1>Homepage</h1>
+            <p>Welcome to basic exercise</p>
+            <a class="btn btn-primary" href="/calendar">Calendar</a>
+            <a class="btn btn-success" href="#">Notice</a>
+            <a class="btn btn-info" href="#">Export file</a>
+            <a class="btn btn-danger" href="/api/v1/auth/logout">Logout</a>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/Footer'); %>
+    </footer>
 </body>
 </html>
