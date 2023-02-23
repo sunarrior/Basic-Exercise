@@ -23,3 +23,8 @@
 #calendar {
     border: 1px solid black;
 }
+
+.my-datepicker {
+    text-align: center;
+    text-transform: uppercase;
+}

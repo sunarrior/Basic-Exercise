@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/Head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>TodoList</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col col-xl-10">
+                    <div class="card" style="border-radius: 15px;">
+                        <div class="card-body p-5">
+                            <h6 class="mb-3">TodoList</h6>
+                            <form class="d-flex justify-content-center align-items-center mb-4" action="/api/v1/task" method="POST">
+                                <div class="form-outline flex-fill">
+                                    <input type="text" id="content" class="form-control form-control-lg" name="content" placeholder="What do you need to do today?" required/>
+                                </div>
+                                <div class="form-outline flex-fill">
+                                    <input type="datetime-local" id="dueDate" class="form-control form-control-lg my-datepicker" name="dueDate" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-lg ms-2">Add</button>
+                            </form>
+            
+                            <ul class="list-group mb-0">
+                                <%- todolist %>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <%- include('../partials/Footer'); %>
+    </footer>
+</body>
+</html>

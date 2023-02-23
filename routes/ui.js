@@ -10,6 +10,8 @@ router.get("/login", cookieChecker, ui.getLoginPage);
 router.get("/recovery", cookieChecker, ui.getForgotPasswdPage);
 router.get("/homepage", cookieChecker, ui.getHomepagePage);
 router.get("/calendar", cookieChecker, ui.getCalendarPage);
+router.get("/tasks", cookieChecker, ui.getTodoListPage);
+router.get("/tasks/:id", cookieChecker, ui.getEditTaskPage);
 router.get("/", cookieChecker, ui.getIndexPage);
 
 export default router;

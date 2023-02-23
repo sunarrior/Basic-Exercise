@@ -1,9 +1,7 @@
 import utils from "../utils/index.js";
 
-import User from "../model/User.js";
-
 const dataSource = await utils.db.dataSource;
-const userDataRepository = dataSource.getRepository(User);
+const userDataRepository = dataSource.getRepository("User");
 
 const createUser = async function (userData) {
   try {
@@ -13,19 +11,8 @@ const createUser = async function (userData) {
   }
 };
 
-const getAllUsers = async function () {
+const getUserByAttrb = async function (data) {
   try {
-    const result = await userDataRepository.find();
-    return result;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-const getUserByAttrb = async function (attrb, value) {
-  try {
-    const data = {};
-    data[attrb] = value;
     const result = await userDataRepository.findOneBy(data);
     return result;
   } catch (err) {
@@ -34,21 +21,38 @@ const getUserByAttrb = async function (attrb, value) {
 };
 
 const getUserByEOU = async function (account) {
-  let user;
-  if (utils.regex.accountType(account)) {
-    user = await getUserByAttrb("email", account);
-  } else {
-    user = await getUserByAttrb("username", account);
+  try {
+    let user;
+    if (utils.regex.accountType(account)) {
+      user = await getUserByAttrb({ email: account });
+    } else {
+      user = await getUserByAttrb({ username: account });
+    }
+    return user;
+  } catch (err) {
+    console.log(err);
   }
-  return user;
 };
 
-const updateUserByAttrb = async function (username, key, value) {
+const getAllTasksOfUser = async function (userid) {
   try {
-    const user = await userDataRepository.findOneBy({ username: username });
-    const data = {};
-    data[key] = value;
-    await userDataRepository.update(user.userid, data);
+    const result = await userDataRepository.findOne({
+      where: {
+        id: 1,
+      },
+      relations: {
+        tasks: true,
+      },
+    });
+    return result.tasks;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const updateUserByAttrb = async function (userid, data) {
+  try {
+    await userDataRepository.update(userid, data);
   } catch (err) {
     console.log(err);
   }
@@ -56,8 +60,8 @@ const updateUserByAttrb = async function (username, key, value) {
 
 export default {
   createUser,
-  getAllUsers,
   getUserByAttrb,
   getUserByEOU,
+  getAllTasksOfUser,
   updateUserByAttrb,
 };

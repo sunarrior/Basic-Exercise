@@ -9,6 +9,22 @@ const createUser = async function (req, res) {
       email: req.body.email,
       passwd: req.body.passwd,
     };
+
+    // check if user already exists
+    const user = await userDB.getUserByAttrb({
+      username: userData.username,
+      email: userData.email,
+    });
+    if (user) {
+      const msg = "Username has already existed!";
+      const warning = utils.render.warningBar(msg);
+      delete userData.passwd;
+      return res.render("pages/Register", {
+        warning: warning,
+        userData: userData,
+      });
+    }
+
     // Hash passwd and save user to db
     const hashPasswd = await utils.crypto.encryptPasswd(userData.passwd);
     userData.passwd = hashPasswd;
@@ -17,24 +33,9 @@ const createUser = async function (req, res) {
     // Generate token and send mail to user
     const token = await utils.crypto.generateToken(64);
     await utils.redisCache.setObjByKey(userData.username, "token", token, 300);
-    await utils.mail.sendVerifyMail(userData.username, userData.email, token);
+    utils.mail.sendVerifyMail(userData.username, userData.email, token);
     res.end("Check your mailbox to get verify link");
-
-    // const result = await userDB.getAllUsersData();
-    // res.json(result);
   } catch (err) {
-    let msg = "";
-    if (err.errno === 1062) {
-      console.log("duplicate user");
-      msg = "Username has already existed!";
-    }
-    const userData = {
-      name: req.body.name,
-      username: req.body.username,
-      email: req.body.email,
-    };
-    const warning = utils.render.warningBar(msg);
-    res.render("pages/Register", { warning: warning, userData: userData });
     console.log(err);
   }
 };
@@ -43,18 +44,19 @@ const verifyAccount = async function (req, res) {
   try {
     const username = req.params.username;
     const token = req.params.token;
+
+    // Check if user has input verify token
     const result = await utils.redisCache.checkObjByKey(
       username,
       "token",
       token
     );
-    if (result) {
-      await userDB.updateUserByAttrb(username, "active_status", result);
-      utils.redisCache.clearCache(username);
-      res.render("pages/VerifiedAccount");
-    } else {
-      res.end("something wrong happen ._.");
+    if (!result) {
+      return res.end("something wrong happen ._.");
     }
+    await userDB.updateUserByAttrb(username, { active_status: result });
+    utils.redisCache.clearCache(username);
+    res.render("pages/VerifiedAccount");
   } catch (err) {
     console.log(err);
   }
@@ -66,60 +68,73 @@ const validateLogin = async function (req, res) {
     const passwd = req.body.passwd;
     let msg = "";
     const user = await userDB.getUserByEOU(account);
+
+    // Check if user exists
     if (!user) {
       msg = "Username is not exists!";
-    } else {
-      if (!user.active_status) {
-        msg = `Verify your account to start using services <a href="#">Click here to resend verify link</a>`;
-        const warning = utils.render.warningBar(msg);
-        return res.render("pages/Login", {
-          warning: warning,
-          account: account,
-        });
-      }
-      const passwdAttemps = await utils.redisCache.getPasswdAttemps(
-        user.username
-      );
-      if (passwdAttemps >= 3) {
-        msg = "Your account has been blocked for 50 minutes";
-        // set time in redis cache
-        const warning = utils.render.warningBar(msg);
-        return res.render("pages/Login", {
-          warning: warning,
-          account: account,
-        });
-      }
-      const compareResult = await utils.crypto.validatePasswd(
-        passwd,
-        user.passwd
-      );
-      if (!compareResult) {
-        msg = "Username or password is incorrect!";
-        await utils.redisCache.setObjByKey(
-          user.username,
-          "passwdAttemps",
-          passwdAttemps + 1,
-          3000
-        );
-      }
-    }
-    if (msg != "") {
       const warning = utils.render.warningBar(msg);
-      res.render("pages/Login", { warning: warning, account: account });
-    } else {
+      return res.render("pages/Login", {
+        warning: warning,
+        account: account,
+      });
+    }
+
+    // Check if user has already verified
+    if (!user.active_status) {
+      msg = `Verify your account to start using services <a href="#">Click here to resend verify link</a>`;
+      const warning = utils.render.warningBar(msg);
+      return res.render("pages/Login", {
+        warning: warning,
+        account: account,
+      });
+    }
+
+    // Check password attemps to prevent spam login
+    const passwdAttemps = await utils.redisCache.getPasswdAttemps(
+      user.username
+    );
+    if (passwdAttemps >= 3) {
+      msg = "Your account has been blocked for 50 minutes";
+      // set time in redis cache
+      const warning = utils.render.warningBar(msg);
+      return res.render("pages/Login", {
+        warning: warning,
+        account: account,
+      });
+    }
+
+    // Validation password login
+    const compareResult = await utils.crypto.validatePasswd(
+      passwd,
+      user.passwd
+    );
+    if (!compareResult) {
+      msg = "Username or password is incorrect!";
       await utils.redisCache.setObjByKey(
         user.username,
-        "sessionId",
-        "test",
+        "passwdAttemps",
+        passwdAttemps + 1,
         3000
       );
-      res.cookie("username", user.username, {
-        maxAge: 3000000,
-        httpOnly: true,
+      const warning = utils.render.warningBar(msg);
+      return res.render("pages/Login", {
+        warning: warning,
+        account: account,
       });
-      res.cookie("sessionId", "test", { maxAge: 3000000, httpOnly: true });
-      res.redirect("/homepage");
     }
+
+    await utils.redisCache.setObjByKey(
+      user.username,
+      "sessionId",
+      "test",
+      3000
+    );
+    res.cookie("username", user.username, {
+      maxAge: 3000000,
+      httpOnly: true,
+    });
+    res.cookie("sessionId", "test", { maxAge: 3000000, httpOnly: true });
+    res.redirect("/homepage");
   } catch (err) {
     console.log(err);
   }
@@ -130,23 +145,27 @@ const recoveryRequest = async function (req, res) {
     // Get user info if exist
     const account = req.body.account;
     const user = await userDB.getUserByEOU(account);
+
+    // find account request
     if (req.query.findaccount) {
       if (!user) {
         const msg = "User not found";
         const warning = utils.render.warningBar(msg);
-        res.render("pages/ForgotPassword", { warning: warning });
-      } else {
-        const code = await utils.crypto.generateRecoveryCode();
-        await utils.redisCache.setObjByKey(
-          user.username,
-          "recoveryCode",
-          code,
-          300
-        );
-        await utils.mail.sendRecoveryCode(user.username, user.email, code);
-        res.render("pages/RecoveryPasswd", { warning: "", account: account });
+        return res.render("pages/ForgotPassword", { warning: warning });
       }
-    } else if (req.query.verify) {
+      const code = await utils.crypto.generateRecoveryCode();
+      await utils.redisCache.setObjByKey(
+        user.username,
+        "recoveryCode",
+        code,
+        300
+      );
+      utils.mail.sendRecoveryCode(user.username, user.email, code);
+      res.render("pages/RecoveryPasswd", { warning: "", account: account });
+    }
+
+    // Verify change password request
+    if (req.query.verify) {
       const recoveryCode = req.body.code;
       const newPasswd = req.body.passwd;
       const result = await utils.redisCache.checkObjByKey(
@@ -157,15 +176,14 @@ const recoveryRequest = async function (req, res) {
       if (!result) {
         const msg = "Wrong code";
         const warning = utils.render.warningBar(msg);
-        res.render("pages/RecoveryPasswd", {
+        return res.render("pages/RecoveryPasswd", {
           warning: warning,
           account: account,
         });
-      } else {
-        const hashPasswd = await utils.crypto.encryptPasswd(newPasswd);
-        await userDB.updateUserByAttrb(user.username, "passwd", hashPasswd);
-        res.redirect("/login");
       }
+      const hashPasswd = await utils.crypto.encryptPasswd(newPasswd);
+      await userDB.updateUserByAttrb(user.id, { passwd: hashPasswd });
+      res.redirect("/login");
     }
   } catch (err) {
     console.log(err);
