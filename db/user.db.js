@@ -34,22 +34,6 @@ const getUserByEOU = async function (account) {
   }
 };
 
-const getAllTasksOfUser = async function (userid) {
-  try {
-    const result = await userDataRepository.findOne({
-      where: {
-        id: 1,
-      },
-      relations: {
-        tasks: true,
-      },
-    });
-    return result.tasks;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const updateUserByAttrb = async function (userid, data) {
   try {
     await userDataRepository.update(userid, data);
@@ -62,6 +46,5 @@ export default {
   createUser,
   getUserByAttrb,
   getUserByEOU,
-  getAllTasksOfUser,
   updateUserByAttrb,
 };

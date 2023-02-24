@@ -11,10 +11,10 @@ const taskUI = function (taskid, content, createdAt, dueDate, isComplete) {
     completedBgColor = `style="background-color: rgb(134 239 172);"`;
   }
   const task = `
-    <li ${completedBgColor}
-      class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-0 mb-2">
+    <li ${completedBgColor} id="task-container-${taskid}"
+      class="list-group-item d-flex justify-content-between align-items-center border-start-0 border-top-0 border-end-0 border-bottom rounded-2 mb-2">
       <div class="d-flex align-items-center">
-          <input id="task" class="form-check-input me-2" type="checkbox" aria-label="..." ${checked}/>
+          <input id="taskCheck" class="form-check-input me-2" type="checkbox" value=${taskid} aria-label="..." onchange="updateStatus(this)" ${checked}/>
           <label class="form-check-label">${content}</label>
       </div>
       <div class="d-flex">

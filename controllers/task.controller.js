@@ -14,7 +14,6 @@ const createTask = async function (req, res) {
       due_date: dueDate,
       user: user,
     };
-    // console.log(task);
     await taskDB.createTask(task);
     res.redirect("/tasks");
   } catch (err) {
@@ -25,11 +24,33 @@ const createTask = async function (req, res) {
 const updateTask = async function (req, res) {
   try {
     const taskid = req.params.id;
-    const task = {
-      content: req.body.content,
-      due_date: req.body.dueDate,
+
+    // check if task exists
+    const task = await taskDB.getTaskById(taskid);
+    if (!task) {
+      return res.redirect("/tasks");
+    }
+
+    // Check to set data from body or db
+    let isComplete = req.body.isComplete;
+    if (isComplete === undefined) {
+      isComplete = task.is_complete;
+    }
+    let content = req.body.content;
+    if (content === undefined) {
+      content = task.content;
+    }
+    let dueDate = req.body.dueDate;
+    if (dueDate === undefined) {
+      dueDate = task.dueDate;
+    }
+    const taskData = {
+      content: content,
+      due_date: dueDate,
+      is_complete: isComplete,
     };
-    await taskDB.updateTask(taskid, task);
+
+    await taskDB.updateTask(taskid, taskData);
     res.redirect("/tasks");
   } catch (err) {
     console.log(err);
@@ -39,6 +60,13 @@ const updateTask = async function (req, res) {
 const deleteTaskById = async function (req, res) {
   try {
     const taskid = req.params.id;
+
+    // check if task exists
+    const task = await taskDB.getTaskById(taskid);
+    if (!task) {
+      return res.redirect("/tasks");
+    }
+
     await taskDB.deleteTaskById(taskid);
     res.redirect("/tasks");
   } catch (err) {

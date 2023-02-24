@@ -12,7 +12,10 @@
                 <div class="col col-xl-10">
                     <div class="card" style="border-radius: 15px;">
                         <div class="card-body p-5">
-                            <h6 class="mb-3">TodoList</h6>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-3">TodoList</h6>
+                                <a href="/homepage" class="btn btn-primary btn-lg ms-2">Homepage</a>
+                            </div>
                             <form class="d-flex justify-content-center align-items-center mb-4" action="/api/v1/task" method="POST">
                                 <div class="form-outline flex-fill">
                                     <input type="text" id="content" class="form-control form-control-lg" name="content" placeholder="What do you need to do today?" required/>
@@ -37,4 +40,28 @@
         <%- include('../partials/Footer'); %>
     </footer>
 </body>
+<script>
+    function updateStatus(checkboxPointer) {
+        const taskid = checkboxPointer.value;
+        const isComplete = checkboxPointer.checked;
+        const taskContainer = document.getElementById("task-container-" + taskid);
+        if (isComplete) {
+            taskContainer.style.backgroundColor  = "rgb(134 239 172)";
+        } else {
+            taskContainer.style.backgroundColor  = "";
+        }
+        sendRequest(taskid, isComplete);
+    }
+
+    function sendRequest(taskid, status) {
+        fetch(`http://localhost:3000/api/v1/task/${taskid}/update`, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "isComplete": status })
+        });
+    }
+</script>
 </html>

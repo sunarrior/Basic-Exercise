@@ -24,6 +24,8 @@ export default async (req, res, next) => {
           next();
         }
       } else {
+        res.clearCookie("username");
+        res.clearCookie("sessionId");
         res.redirect("/login");
       }
     } else {
@@ -31,7 +33,9 @@ export default async (req, res, next) => {
         url != "/" &&
         url != "/login" &&
         url != "/register" &&
-        url != "/recovery"
+        url != "/recovery" &&
+        url != "/verify" &&
+        url.substring(7, 12) != "/auth"
       ) {
         res.redirect("/login");
       } else {

@@ -34,7 +34,37 @@ const createUser = async function (req, res) {
     const token = await utils.crypto.generateToken(64);
     await utils.redisCache.setObjByKey(userData.username, "token", token, 300);
     utils.mail.sendVerifyMail(userData.username, userData.email, token);
-    res.end("Check your mailbox to get verify link");
+    const msg = "Check your mailbox to get verify link";
+    res.render("pages/Notification", { msg: msg });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const reSendVerifyCode = async function (req, res) {
+  try {
+    const account = req.body.account;
+    const user = await userDB.getUserByEOU(account);
+
+    // Check if user exists
+    if (!user) {
+      const msg = "Username is not exists!";
+      const warning = utils.render.warningBar(msg);
+      return res.render("pages/ResendVerify", { warning: warning });
+    }
+
+    // Check if user already verified
+    if (user.active_status) {
+      const msg = "Username has already verified!";
+      return res.render("pages/Notification", { msg: msg });
+    }
+
+    // Generate token and send mail to user
+    const token = await utils.crypto.generateToken(64);
+    await utils.redisCache.setObjByKey(user.username, "token", token, 300);
+    utils.mail.sendVerifyMail(user.username, user.email, token);
+    const msg = "Check your mailbox to get verify link";
+    res.render("pages/Notification", { msg: msg });
   } catch (err) {
     console.log(err);
   }
@@ -42,21 +72,33 @@ const createUser = async function (req, res) {
 
 const verifyAccount = async function (req, res) {
   try {
+    let msg = "";
     const username = req.params.username;
     const token = req.params.token;
+    const user = await userDB.getUserByEOU(username);
 
-    // Check if user has input verify token
+    // Check if user exists
+    if (!user) {
+      msg = "Username is not exists!";
+      return res.render("pages/Notification", { msg: msg });
+    }
+
+    // Check if user has verify token
     const result = await utils.redisCache.checkObjByKey(
       username,
       "token",
       token
     );
     if (!result) {
-      return res.end("something wrong happen ._.");
+      msg = `Verify code has been expired! <a href="/verify">Click here to resend verify link</a>`;
+      return res.render("pages/Notification", { msg: msg });
     }
-    await userDB.updateUserByAttrb(username, { active_status: result });
+
+    // update active status
+    await userDB.updateUserByAttrb(user.id, { active_status: result });
     utils.redisCache.clearCache(username);
-    res.render("pages/VerifiedAccount");
+    msg = "Your account has been verified";
+    res.render("pages/Notification", { msg: msg });
   } catch (err) {
     console.log(err);
   }
@@ -81,7 +123,7 @@ const validateLogin = async function (req, res) {
 
     // Check if user has already verified
     if (!user.active_status) {
-      msg = `Verify your account to start using services <a href="#">Click here to resend verify link</a>`;
+      msg = `Verify your account to start using services <a href="/verify">Click here to resend verify link</a>`;
       const warning = utils.render.warningBar(msg);
       return res.render("pages/Login", {
         warning: warning,
@@ -123,17 +165,21 @@ const validateLogin = async function (req, res) {
       });
     }
 
+    // generate sessionid
+    const sessionId = await utils.crypto.generateToken(32);
+
+    // process login
     await utils.redisCache.setObjByKey(
       user.username,
       "sessionId",
-      "test",
+      sessionId,
       3000
     );
     res.cookie("username", user.username, {
       maxAge: 3000000,
       httpOnly: true,
     });
-    res.cookie("sessionId", "test", { maxAge: 3000000, httpOnly: true });
+    res.cookie("sessionId", sessionId, { maxAge: 3000000, httpOnly: true });
     res.redirect("/homepage");
   } catch (err) {
     console.log(err);
@@ -148,11 +194,15 @@ const recoveryRequest = async function (req, res) {
 
     // find account request
     if (req.query.findaccount) {
+      // check if user exists
       if (!user) {
         const msg = "User not found";
         const warning = utils.render.warningBar(msg);
         return res.render("pages/ForgotPassword", { warning: warning });
       }
+
+      // generate recovery code, save to redis cache
+      // and send to user mail
       const code = await utils.crypto.generateRecoveryCode();
       await utils.redisCache.setObjByKey(
         user.username,
@@ -166,6 +216,13 @@ const recoveryRequest = async function (req, res) {
 
     // Verify change password request
     if (req.query.verify) {
+      // check if user exists
+      if (!user) {
+        const msg = "User not found";
+        return res.render("pages/Notification", { msg: msg });
+      }
+
+      // check if code is valid
       const recoveryCode = req.body.code;
       const newPasswd = req.body.passwd;
       const result = await utils.redisCache.checkObjByKey(
@@ -181,6 +238,8 @@ const recoveryRequest = async function (req, res) {
           account: account,
         });
       }
+
+      // process change password
       const hashPasswd = await utils.crypto.encryptPasswd(newPasswd);
       await userDB.updateUserByAttrb(user.id, { passwd: hashPasswd });
       res.redirect("/login");
@@ -203,9 +262,10 @@ const userLogout = function (req, res) {
 };
 
 export default {
-  validateLogin,
-  verifyAccount,
   createUser,
+  reSendVerifyCode,
+  verifyAccount,
+  validateLogin,
   recoveryRequest,
   userLogout,
 };

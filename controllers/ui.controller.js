@@ -18,6 +18,14 @@ const getRegisterPage = function (req, res) {
   }
 };
 
+const getResendVerifyPage = function (req, res) {
+  try {
+    res.render("pages/ResendVerify", { warning: "" });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 const getLoginPage = function (req, res) {
   try {
     res.render("pages/Login", { warning: "", account: "" });
@@ -52,9 +60,12 @@ const getCalendarPage = function (req, res) {
 
 const getTodoListPage = async function (req, res) {
   try {
-    const username = req.cookies.usernames;
+    const username = req.cookies.username;
     const user = await userDB.getUserByEOU(username);
-    const tasksList = await userDB.getAllTasksOfUser(user.id);
+    const tasksList = await taskDB.getAllTasksOfUser(user.id);
+    tasksList.sort(function (t1, t2) {
+      return new Date(t1.due_date) - new Date(t2.due_date);
+    });
     const todolist = tasksList.reduce((result, task) => {
       const taskUI = utils.render.taskUI(
         task.id,
@@ -74,7 +85,12 @@ const getTodoListPage = async function (req, res) {
 const getEditTaskPage = async function (req, res) {
   try {
     const taskid = req.params.id;
+
+    // check if task exists
     const task = await taskDB.getTaskById(taskid);
+    if (!task) {
+      return res.redirect("/tasks");
+    }
     res.render("pages/UpdateTask", {
       task: {
         id: task.id,
@@ -90,6 +106,7 @@ const getEditTaskPage = async function (req, res) {
 export default {
   getIndexPage,
   getRegisterPage,
+  getResendVerifyPage,
   getLoginPage,
   getForgotPasswdPage,
   getHomepagePage,

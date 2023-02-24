@@ -11,11 +11,13 @@ const createTask = async function (task) {
   }
 };
 
-const getAllTasks = async function () {
+const getAllTasksOfUser = async function (userid) {
   try {
     const result = await taskDataRepository.find({
-      relations: {
-        user: true,
+      where: {
+        user: {
+          id: userid,
+        },
       },
     });
     return result;
@@ -47,7 +49,7 @@ const deleteTaskById = async function (taskid) {
 
 export default {
   createTask,
-  getAllTasks,
+  getAllTasksOfUser,
   getTaskById,
   updateTask,
   deleteTaskById,
