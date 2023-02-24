@@ -9,7 +9,8 @@ const router = express.Router();
 
 router.post("/register", validateRegister, user.createUser);
 router.post("/login", user.validateLogin);
-router.get("/logout", cookieChecker, user.userLogout);
+router.get("/logout", user.userLogout);
+router.post("/verify", user.reSendVerifyCode);
 router.get("/verify/:username/:token", user.verifyAccount);
 router.post("/recovery", validateRecovery, user.recoveryRequest);
 

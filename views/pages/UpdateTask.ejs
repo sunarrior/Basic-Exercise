@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Update Task Page</title>
+</head>
+<body class="container mybodybg">
+    <main>
+        <div class="container py-5 h-100">
+            <div class="form-box rounded">
+                <h2>Update Task</h2>
+                <form class="form-login" action="/api/v1/task/<%- task.id %>/update" method="POST">
+                    <!-- Content input -->
+                    <div class="form-outline mb-4">
+                        <input type="text" id="content" class="form-control" name="content" value="<%- task.content %>" placeholder="Content" required/>
+                    </div>
+    
+                    <!-- Due on date input -->
+                    <div class="form-outline mb-4">
+                        <input type="datetime-local" id="dueDate" class="form-control my-datepicker" name="dueDate" value="<%- task.due_date %>" placeholder="Due on date" required/>
+                    </div>
+    
+                    <!-- Submit button -->
+                    <button type="submit" class="btn btn-primary btn-block mb-4">Update task</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
+

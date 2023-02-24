@@ -3,40 +3,33 @@ import typeorm from "typeorm";
 const EntitySchema = typeorm.EntitySchema;
 
 export default new EntitySchema({
-  name: "User",
+  name: "Task",
   columns: {
     id: {
       primary: true,
       type: "int",
       generated: true,
     },
-    name: {
-      type: "varchar",
-      nullable: true,
-    },
-    username: {
-      type: "varchar",
-      unique: true,
-    },
-    email: {
-      type: "varchar",
-      unique: true,
-    },
-    passwd: {
+    content: {
       type: "varchar",
     },
-    active_status: {
+    created_at: {
+      type: "datetime",
+    },
+    due_date: {
+      type: "datetime",
+    },
+    is_complete: {
       type: "boolean",
       default: false,
     },
   },
   relations: {
-    tasks: {
-      target: "Task",
-      type: "one-to-many",
+    user: {
+      target: "User",
+      type: "many-to-one",
       joinTable: true,
-      inverseSide: "user",
-      cascade: true,
+      joinColumn: true,
     },
   },
 });

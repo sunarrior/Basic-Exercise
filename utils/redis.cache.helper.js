@@ -38,6 +38,7 @@ const checkObjByKey = async function (key, objKey, objValue) {
       if (objValue === cacheObj[objKey]) {
         return true;
       }
+      return false;
     } else {
       return false;
     }
@@ -54,6 +55,7 @@ const getPasswdAttemps = async function (key) {
       if (cacheObj.passwdAttemps) {
         return cacheObj.passwdAttemps;
       }
+      return 0;
     } else {
       return 0;
     }

@@ -1,9 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
-import "reflect-metadata";
 import typeorm from "typeorm";
 
 import UserSchema from "../entity/UserSchema.js";
+import TaskSchema from "../entity/TaskSchema.js";
 
 const DATASOURCE_CONFIG = {
   type: process.env.DATABASE_TYPE,
@@ -12,7 +12,7 @@ const DATASOURCE_CONFIG = {
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWD,
   database: process.env.DATABASE_NAME,
-  entities: [UserSchema],
+  entities: [UserSchema, TaskSchema],
   synchronize: true,
 };
 

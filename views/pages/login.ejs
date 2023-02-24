@@ -7,40 +7,39 @@
 </head>
 <body class="container mybodybg">
     <main>
-        <div class="form-box rounded">
-            <h2>Login Form</h2>
-            <form class="form-login" action="/api/v1/auth/login" method="POST">
-                <!-- Account input -->
-                <div class="form-outline mb-4">
-                    <input type="text" id="account" class="form-control" name="account" value="<%- account %>" placeholder="Username or Email"/>
-                </div>
-
-                <!-- Password input -->
-                <div class="form-outline mb-4">
-                    <input type="password" id="passwd" class="form-control" name="passwd" placeholder="Password"/>
-                </div>
-
-                <%- warning || '' %>
-
-                <!-- 2 column grid layout for inline styling -->
-                <div class="row mb-4">
-                    <div class="col d-flex justify-content-center">
-                    <!-- Checkbox -->
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="RememberMe" />
-                        <label class="form-check-label" for="RememberMe">Remember me</label>
+        <div class="container py-5 h-100">
+            <div class="form-box rounded">
+                <h2>Login Form</h2>
+                <form class="form-login" action="/api/v1/auth/login" method="POST">
+                    <!-- Account input -->
+                    <div class="form-outline mb-4">
+                        <input type="text" id="account" class="form-control" name="account" value="<%- account %>" placeholder="Username or Email"/>
                     </div>
+    
+                    <!-- Password input -->
+                    <div class="form-outline mb-4">
+                        <input type="password" id="passwd" class="form-control" name="passwd" placeholder="Password"/>
                     </div>
-
-                    <div class="col">
-                    <!-- Simple link -->
-                    <a href="/recovery">Forgot password?</a>
+    
+                    <%- warning || '' %>
+    
+                    <!-- 2 column grid layout for inline styling -->
+                    <div class="row mb-4">
+                        <div class="col">
+                            <!-- Simple link -->
+                            Dont have account? <a href="/register">Register now</a>
+                        </div>
+    
+                        <div class="col">
+                            <!-- Simple link -->
+                            <a href="/recovery">Forgot password?</a>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Submit button -->
-                <button type="submit" id="loginBtn" class="btn btn-primary btn-block mb-4" disabled>Sign in</button>
-            </form>
+    
+                    <!-- Submit button -->
+                    <button type="submit" id="loginBtn" class="btn btn-primary btn-block mb-4" disabled>Sign in</button>
+                </form>
+            </div>
         </div>
     </main>
 </body>

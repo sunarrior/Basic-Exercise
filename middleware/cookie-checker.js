@@ -5,6 +5,7 @@ export default async (req, res, next) => {
     const username = req.cookies.username;
     const sessionId = req.cookies.sessionId;
     const url = req.url;
+    // console.log(url);
     if (username != undefined && sessionId != undefined) {
       const result = await utils.redisCache.checkObjByKey(
         username,
@@ -23,6 +24,8 @@ export default async (req, res, next) => {
           next();
         }
       } else {
+        res.clearCookie("username");
+        res.clearCookie("sessionId");
         res.redirect("/login");
       }
     } else {
@@ -30,7 +33,9 @@ export default async (req, res, next) => {
         url != "/" &&
         url != "/login" &&
         url != "/register" &&
-        url != "/recovery"
+        url != "/recovery" &&
+        url != "/verify" &&
+        url.substring(7, 12) != "/auth"
       ) {
         res.redirect("/login");
       } else {
