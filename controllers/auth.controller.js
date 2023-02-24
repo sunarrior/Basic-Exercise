@@ -88,7 +88,7 @@ const verifyAccount = async function (req, res) {
       token
     );
     if (!result) {
-      msg = `Verify code has been expired! <a href="/verify">Click here to resend verify link</a>`;
+      msg = `Verify link has been expired! <a href="/verify">Click here to resend verify link</a>`;
       return res.render("pages/Notification", { msg: msg });
     }
 
@@ -250,6 +250,10 @@ const recoveryRequest = async function (req, res) {
 const userLogout = function (req, res) {
   try {
     const username = req.cookies.username;
+
+    if (username === undefined) {
+      return res.redirect("/login");
+    }
     utils.redisCache.clearCache(username);
     res.clearCookie("username");
     res.clearCookie("sessionId");

@@ -1,20 +1,10 @@
 const getDayStringDB = function (dayString) {
-  if (dayString.substring(0, 5)[4] != "-") {
+  if (dayString === undefined) {
+    dayString = new Date();
+  } else if (dayString.substring(0, 5)[4] != "-") {
     dayString = new Date();
   }
   const day = new Date(dayString);
-  const localDate = day.getDate() < 10 ? "0" + day.getDate() : day.getDate();
-  const localMonth =
-    day.getMonth() < 9 ? "0" + (day.getMonth() + 1) : day.getMonth() + 1;
-  const localYear = day.getFullYear() < 1970 ? 1970 : day.getFullYear();
-  const localTime = day.toLocaleTimeString("en-GB");
-  const dayStringDB =
-    localYear + "-" + localMonth + "-" + localDate + " " + localTime;
-  return dayStringDB;
-};
-
-const getTodayStringDB = function () {
-  const day = new Date();
   const localDate = day.getDate() < 10 ? "0" + day.getDate() : day.getDate();
   const localMonth =
     day.getMonth() < 9 ? "0" + (day.getMonth() + 1) : day.getMonth() + 1;
@@ -32,9 +22,10 @@ const getLocalDayString = function (dayString) {
 
 const getDatePickerString = function (dayString) {
   const day = new Date(dayString);
-  const localDate = day.getDate();
-  const localMonth = "0" + (day.getMonth() + 1);
-  const localYear = day.getFullYear();
+  const localDate = day.getDate() < 10 ? "0" + day.getDate() : day.getDate();
+  const localMonth =
+    day.getMonth() < 9 ? "0" + (day.getMonth() + 1) : day.getMonth() + 1;
+  const localYear = day.getFullYear() < 1970 ? 1970 : day.getFullYear();
   const localTime = day.toLocaleTimeString("en-GB").substring(0, 5);
   const dayStringDB =
     localYear + "-" + localMonth + "-" + localDate + "T" + localTime;
@@ -43,7 +34,6 @@ const getDatePickerString = function (dayString) {
 
 export default {
   getDayStringDB,
-  getTodayStringDB,
   getLocalDayString,
   getDatePickerString,
 };
