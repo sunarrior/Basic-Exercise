@@ -4,6 +4,7 @@ import regex from "./regex.helper.js";
 import render from "./render.helper.js";
 import redisCache from "./redis.cache.helper.js";
 import mail from "./mail.helper.js";
+import format from "./format.helper.js";
 
 export default {
   db,
@@ -12,4 +13,5 @@ export default {
   render,
   redisCache,
   mail,
+  format,
 };
