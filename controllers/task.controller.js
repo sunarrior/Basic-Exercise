@@ -6,7 +6,7 @@ import utils from "../utils/index.js";
 const createTask = async function (req, res) {
   try {
     const user = await userDB.getUserByEOU(req.cookies.username);
-    const createdAt = utils.format.getTodayStringDB();
+    const createdAt = utils.format.getDayStringDB();
     const dueDate = utils.format.getDayStringDB(req.body.dueDate);
     const task = {
       content: req.body.content,
