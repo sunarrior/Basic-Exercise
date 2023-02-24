@@ -1,4 +1,7 @@
 const getDayStringDB = function (dayString) {
+  if (dayString.substring(0, 5)[4] != "-") {
+    dayString = new Date();
+  }
   const day = new Date(dayString);
   const localDate = day.getDate() < 10 ? "0" + day.getDate() : day.getDate();
   const localMonth =

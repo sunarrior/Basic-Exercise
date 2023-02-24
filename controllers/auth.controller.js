@@ -11,12 +11,10 @@ const createUser = async function (req, res) {
     };
 
     // check if user already exists
-    const user = await userDB.getUserByAttrb({
-      username: userData.username,
-      email: userData.email,
-    });
-    if (user) {
-      const msg = "Username has already existed!";
+    const user = await userDB.getUserByEOU(userData.username);
+    const userEmail = await userDB.getUserByEOU(userData.email);
+    if (user || userEmail) {
+      const msg = "Username or Email has already existed!";
       const warning = utils.render.warningBar(msg);
       delete userData.passwd;
       return res.render("pages/Register", {
