@@ -5,16 +5,17 @@ import utils from "../utils/index.js";
 
 const createTask = async function (req, res) {
   try {
+    // get user data to create task
     const user = await userDB.getUserByEOU(req.cookies.username);
     const createdAt = utils.format.getDayStringDB();
     const dueDate = utils.format.getDayStringDB(req.body.dueDate);
-    const task = {
+    const taskData = {
       content: req.body.content,
       created_at: createdAt,
       due_date: dueDate,
       user: user,
     };
-    await taskDB.createTask(task);
+    await taskDB.createTask(taskData);
     res.redirect("/tasks");
   } catch (err) {
     console.log(err);
@@ -26,7 +27,7 @@ const updateTask = async function (req, res) {
     const taskid = req.params.id;
 
     // check if task exists
-    const task = await taskDB.getTaskById(taskid);
+    const task = await taskDB.getTaskByAttrb({ id: taskid });
     if (!task) {
       return res.redirect("/tasks");
     }
@@ -35,6 +36,9 @@ const updateTask = async function (req, res) {
     let isComplete = req.body.isComplete;
     if (isComplete === undefined) {
       isComplete = task.is_complete;
+      if (isComplete === true) {
+        isComplete = false;
+      }
     }
     let content = req.body.content;
     if (content === undefined) {
@@ -49,7 +53,6 @@ const updateTask = async function (req, res) {
       due_date: dueDate,
       is_complete: isComplete,
     };
-
     await taskDB.updateTask(taskid, taskData);
     res.redirect("/tasks");
   } catch (err) {
@@ -62,7 +65,7 @@ const deleteTaskById = async function (req, res) {
     const taskid = req.params.id;
 
     // check if task exists
-    const task = await taskDB.getTaskById(taskid);
+    const task = await taskDB.getTaskByAttrb({ id: taskid });
     if (!task) {
       return res.redirect("/tasks");
     }
