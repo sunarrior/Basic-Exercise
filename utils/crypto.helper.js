@@ -5,6 +5,16 @@ const { generatePrime, randomBytes } = await import("node:crypto");
 const generatePrimePromise = util.promisify(generatePrime);
 const randomBytesPromise = util.promisify(randomBytes);
 
+const base64Encode = function (text) {
+  const b64String = Buffer.from(text).toString("base64");
+  return b64String;
+};
+
+const base64Decode = function (enc) {
+  const text = Buffer.from(enc).toString("ascii");
+  return text;
+};
+
 const encryptPasswd = async function (passwd) {
   try {
     const salt = await bcrypt.genSalt(10);
@@ -42,6 +52,8 @@ const generateRecoveryCode = async function () {
 };
 
 export default {
+  base64Encode,
+  base64Decode,
   encryptPasswd,
   validatePasswd,
   generateToken,

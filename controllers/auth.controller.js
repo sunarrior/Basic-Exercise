@@ -30,7 +30,10 @@ const createUser = async function (req, res) {
 
     // Generate token and send mail to user
     const token = await utils.crypto.generateToken(64);
-    await utils.redisCache.setObjByKey(userData.username, "token", token, 300);
+    const keyB64 = utils.crypto.base64Encode(
+      userData.username + "-verify-token"
+    );
+    await utils.redisCache.setCache(keyB64, token, 300);
     utils.mail.sendVerifyMail(userData.username, userData.email, token);
     const msg = "Check your mailbox to get verify link";
     res.render("pages/Notification", { msg: msg });
@@ -59,7 +62,8 @@ const reSendVerifyCode = async function (req, res) {
 
     // Generate token and send mail to user
     const token = await utils.crypto.generateToken(64);
-    await utils.redisCache.setObjByKey(user.username, "token", token, 300);
+    const keyB64 = utils.crypto.base64Encode(user.username + "-verify-token");
+    await utils.redisCache.setCache(keyB64, token, 300);
     utils.mail.sendVerifyMail(user.username, user.email, token);
     const msg = "Check your mailbox to get verify link";
     res.render("pages/Notification", { msg: msg });
@@ -82,19 +86,16 @@ const verifyAccount = async function (req, res) {
     }
 
     // Check if user has verify token
-    const result = await utils.redisCache.checkObjByKey(
-      username,
-      "token",
-      token
-    );
-    if (!result) {
+    const keyB64 = utils.crypto.base64Encode(user.username + "-verify-token");
+    const result = await utils.redisCache.getCache(keyB64);
+    if (result != token) {
       msg = `Verify link has been expired! <a href="/verify">Click here to resend verify link</a>`;
       return res.render("pages/Notification", { msg: msg });
     }
 
     // update active status
-    await userDB.updateUserByAttrb(user.id, { active_status: result });
-    utils.redisCache.clearCache(username);
+    await userDB.updateUserByAttrb(user.id, { active_status: 1 });
+    utils.redisCache.clearCache(keyB64);
     msg = "Your account has been verified";
     res.render("pages/Notification", { msg: msg });
   } catch (err) {
@@ -129,10 +130,11 @@ const validateLogin = async function (req, res) {
       });
     }
 
+    // redis
+    const keyB64 = utils.crypto.base64Encode(user.username + "-login-attemps");
     // Check password attemps to prevent spam login
-    const passwdAttemps = await utils.redisCache.getPasswdAttemps(
-      user.username
-    );
+    let passwdAttemps = await utils.redisCache.getCache(keyB64);
+    passwdAttemps = isNaN(passwdAttemps) ? 0 : passwdAttemps;
     if (passwdAttemps >= 3) {
       msg = "Your account has been blocked for 50 minutes";
       // set time in redis cache
@@ -150,12 +152,7 @@ const validateLogin = async function (req, res) {
     );
     if (!compareResult) {
       msg = "Username or password is incorrect!";
-      await utils.redisCache.setObjByKey(
-        user.username,
-        "passwdAttemps",
-        passwdAttemps + 1,
-        3000
-      );
+      await utils.redisCache.setCache(keyB64, ++passwdAttemps, 3000);
       const warning = utils.render.warningBar(msg);
       return res.render("pages/Login", {
         warning: warning,
@@ -163,21 +160,11 @@ const validateLogin = async function (req, res) {
       });
     }
 
-    // generate sessionid
-    const sessionId = await utils.crypto.generateToken(32);
-
     // process login
-    await utils.redisCache.setObjByKey(
-      user.username,
-      "sessionId",
-      sessionId,
-      3000
-    );
-    res.cookie("username", user.username, {
-      maxAge: 3000000,
-      httpOnly: true,
-    });
-    res.cookie("sessionId", sessionId, { maxAge: 3000000, httpOnly: true });
+    utils.redisCache.clearCache(keyB64);
+    req.session.username = user.username;
+    req.session.userip = req.ip;
+    req.session.useragent = req.get("User-Agent");
     res.redirect("/homepage");
   } catch (err) {
     console.log(err);
@@ -202,12 +189,10 @@ const recoveryRequest = async function (req, res) {
       // generate recovery code, save to redis cache
       // and send to user mail
       const code = await utils.crypto.generateRecoveryCode();
-      await utils.redisCache.setObjByKey(
-        user.username,
-        "recoveryCode",
-        code,
-        300
+      const keyB64 = utils.crypto.base64Encode(
+        user.username + "-recovery-code"
       );
+      await utils.redisCache.setCache(keyB64, code, 300);
       utils.mail.sendRecoveryCode(user.username, user.email, code);
       res.render("pages/RecoveryPasswd", { warning: "", account: account });
     }
@@ -223,12 +208,11 @@ const recoveryRequest = async function (req, res) {
       // check if code is valid
       const recoveryCode = req.body.code;
       const newPasswd = req.body.passwd;
-      const result = await utils.redisCache.checkObjByKey(
-        user.username,
-        "recoveryCode",
-        recoveryCode
+      const keyB64 = utils.crypto.base64Encode(
+        user.username + "-recovery-code"
       );
-      if (!result) {
+      const result = await utils.redisCache.getCache(keyB64);
+      if (result != recoveryCode) {
         const msg = "Wrong code";
         const warning = utils.render.warningBar(msg);
         return res.render("pages/RecoveryPasswd", {
@@ -240,6 +224,7 @@ const recoveryRequest = async function (req, res) {
       // process change password
       const hashPasswd = await utils.crypto.encryptPasswd(newPasswd);
       await userDB.updateUserByAttrb(user.id, { passwd: hashPasswd });
+      utils.redisCache.clearCache(keyB64);
       res.redirect("/login");
     }
   } catch (err) {
@@ -249,15 +234,13 @@ const recoveryRequest = async function (req, res) {
 
 const userLogout = function (req, res) {
   try {
-    const username = req.cookies.username;
-
-    if (username === undefined) {
-      return res.redirect("/login");
-    }
-    utils.redisCache.clearCache(username);
-    res.clearCookie("username");
-    res.clearCookie("sessionId");
-    res.redirect("/");
+    req.session.destroy((err) => {
+      if (err) {
+        return console.log(err);
+      }
+      res.clearCookie("connect.sid");
+      res.redirect("/");
+    });
   } catch (err) {
     console.log(err);
   }
