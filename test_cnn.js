@@ -1,4 +1,5 @@
-import cronjob from "./utils/cronjob.helper.js";
+import cron from "node-cron";
 
-cronjob.test();
-console.log("end main");
+cron.schedule("*/120 * * * * *", function () {
+  console.log("haha");
+});

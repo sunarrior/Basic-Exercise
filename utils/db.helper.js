@@ -46,7 +46,7 @@ const startConnection = async function () {
   }
 };
 
-const dataSource = startConnection();
+const dataSource = await startConnection();
 
 export default {
   dataSource,

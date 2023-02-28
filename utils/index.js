@@ -5,6 +5,7 @@ import render from "./render.helper.js";
 import redisCache from "./redis.cache.helper.js";
 import mail from "./mail.helper.js";
 import format from "./format.helper.js";
+import cron from "./cron.manager.js";
 
 export default {
   db,
@@ -14,4 +15,5 @@ export default {
   redisCache,
   mail,
   format,
+  cron,
 };

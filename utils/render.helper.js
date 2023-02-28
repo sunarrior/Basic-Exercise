@@ -3,12 +3,23 @@ const warningBar = function (msg) {
   return warning;
 };
 
-const taskUI = function (taskid, content, createdAt, dueDate, isComplete) {
+const taskUI = function (
+  taskid,
+  content,
+  createdAt,
+  dueDate,
+  isComplete,
+  duration
+) {
   let checked = "";
   let completedBgColor = "";
+  let dueColor = "warning";
   if (isComplete) {
     checked = "checked";
     completedBgColor = `style="background-color: rgb(134 239 172);"`;
+  }
+  if (duration < 0) {
+    dueColor = "danger";
   }
   const task = `
     <li ${completedBgColor} id="task-container-${taskid}"
@@ -26,9 +37,9 @@ const taskUI = function (taskid, content, createdAt, dueDate, isComplete) {
           </p>
         </div>
         <div
-          class="py-2 px-3 me-2 border border-warning rounded-3 d-flex align-items-center bg-light">
+          class="py-2 px-3 me-2 border border-${dueColor} rounded-3 d-flex align-items-center bg-light">
           <p class="small mb-0">
-            <i class="fas fa-hourglass-half me-2 text-warning" data-mdb-toggle="tooltip" title="Due on date"></i>
+            <i class="fas fa-hourglass-half me-2 text-${dueColor}" data-mdb-toggle="tooltip" title="Due on date"></i>
             ${dueDate}
           </p>
         </div>

@@ -11,7 +11,7 @@ const config = {
 };
 const transporter = nodemailer.createTransport(config);
 
-async function sendMailFromGmail(mailData) {
+const sendMailFromGmail = function (mailData) {
   try {
     const message = {
       from: process.env.GMAIL_USER,
@@ -19,13 +19,13 @@ async function sendMailFromGmail(mailData) {
       subject: mailData.subject,
       html: mailData.htmlContent,
     };
-    await transporter.sendMail(message);
+    return transporter.sendMail(message);
   } catch (err) {
     console.log(err);
   }
-}
+};
 
-async function sendVerifyMail(username, email, token) {
+const sendVerifyMail = function (username, email, token) {
   try {
     const timeSended = new Date();
     const mailData = {
@@ -36,13 +36,13 @@ async function sendVerifyMail(username, email, token) {
         to verify your account
       </b>`,
     };
-    await sendMailFromGmail(mailData);
+    sendMailFromGmail(mailData);
   } catch (err) {
     console.log(err);
   }
-}
+};
 
-async function sendRecoveryCode(username, email, code) {
+const sendRecoveryCode = function (username, email, code) {
   try {
     const timeSended = new Date();
     const mailData = {
@@ -52,14 +52,31 @@ async function sendRecoveryCode(username, email, code) {
         Recovery code for account ${username}: ${code}
       </b>`,
     };
-    await sendMailFromGmail(mailData);
+    sendMailFromGmail(mailData);
   } catch (err) {
     console.log(err);
   }
-}
+};
+
+const sendNotifyDueDate = function (mail) {
+  try {
+    const timeSended = new Date();
+    const mailData = {
+      to: mail.email,
+      subject: `[Task] ${mail.subject} - ${timeSended.toLocaleTimeString()}`,
+      htmlContent: `
+        ${mail.content}
+      `,
+    };
+    return sendMailFromGmail(mailData);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 export default {
   sendMailFromGmail,
   sendVerifyMail,
   sendRecoveryCode,
+  sendNotifyDueDate,
 };

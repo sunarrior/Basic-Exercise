@@ -67,12 +67,14 @@ const getTodoListPage = async function (req, res) {
       return new Date(t1.due_date) - new Date(t2.due_date);
     });
     const todolist = tasksList.reduce((result, task) => {
+      const duration = new Date(task.due_date) - new Date();
       const taskUI = utils.render.taskUI(
         task.id,
         task.content,
         utils.format.getLocalDayString(task.created_at),
         utils.format.getLocalDayString(task.due_date),
-        task.is_complete
+        task.is_complete,
+        duration
       );
       return result + taskUI;
     }, "");

@@ -1,6 +1,6 @@
 import utils from "../utils/index.js";
 
-const dataSource = await utils.db.dataSource;
+const dataSource = utils.db.dataSource;
 const taskDataRepository = dataSource.getRepository("Task");
 
 const createTask = async function (task) {
@@ -26,9 +26,22 @@ const getAllTasksOfUser = async function (userid) {
   }
 };
 
-const getTaskById = async function (taskid) {
+const getAllTaskWithUser = async function () {
   try {
-    const result = await taskDataRepository.findOneBy({ id: taskid });
+    const result = await taskDataRepository.find({
+      relations: {
+        user: true,
+      },
+    });
+    return result;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const getTaskByAttrb = async function (taskData) {
+  try {
+    const result = await taskDataRepository.findOneBy(taskData);
     return result;
   } catch (err) {
     console.log(err);
@@ -50,7 +63,8 @@ const deleteTaskById = async function (taskid) {
 export default {
   createTask,
   getAllTasksOfUser,
-  getTaskById,
+  getAllTaskWithUser,
+  getTaskByAttrb,
   updateTask,
   deleteTaskById,
 };

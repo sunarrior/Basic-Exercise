@@ -8,6 +8,9 @@ import cookieChecker from "./middleware/cookie-checker.js";
 import routes from "./routes/index.js";
 import routesUI from "./routes/ui.js";
 
+import sendMails from "./cronjobs/sendMails.js";
+// sendMails.notifyDueDate();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
