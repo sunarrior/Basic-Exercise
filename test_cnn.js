@@ -1,11 +1,5 @@
-import util from "util";
-const { generatePrime } = await import("node:crypto");
+import cron from "node-cron";
 
-const generatePrimePromise = util.promisify(generatePrime);
-let p = await generatePrimePromise(64, { bigint: true });
-let q = await generatePrimePromise(64, { bigint: true });
-
-// console.log(p);
-const n = p * q;
-
-console.log(n.toString(16));
+cron.schedule("*/120 * * * * *", function () {
+  console.log("haha");
+});

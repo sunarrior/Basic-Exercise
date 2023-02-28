@@ -1,6 +1,6 @@
 import utils from "../utils/index.js";
 
-const dataSource = await utils.db.dataSource;
+const dataSource = utils.db.dataSource;
 const userDataRepository = dataSource.getRepository("User");
 
 const createUser = async function (userData) {
