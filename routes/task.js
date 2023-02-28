@@ -2,8 +2,6 @@ import express from "express";
 
 import task from "../controllers/task.controller.js";
 
-import cookieChecker from "../middleware/cookie-checker.js";
-
 const router = express.Router();
 
 router.post("/", task.createTask);

@@ -60,7 +60,7 @@ const getCalendarPage = function (req, res) {
 
 const getTodoListPage = async function (req, res) {
   try {
-    const username = req.cookies.username;
+    const username = req.session.username;
     const user = await userDB.getUserByEOU(username);
     const tasksList = await taskDB.getAllTasksOfUser(user.id);
     tasksList.sort(function (t1, t2) {
@@ -89,7 +89,7 @@ const getEditTaskPage = async function (req, res) {
     const taskid = req.params.id;
 
     // check if task exists
-    const task = await taskDB.getTaskById(taskid);
+    const task = await taskDB.getTaskByAttrb({ id: taskid });
     if (!task) {
       return res.redirect("/tasks");
     }
